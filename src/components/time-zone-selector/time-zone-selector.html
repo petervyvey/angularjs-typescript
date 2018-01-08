@@ -1,0 +1,11 @@
+<div>
+    <pre>Model: {{ctrl.selected | json}}</pre>
+    <form>
+        <div data-ng-repeat="timeZone in ctrl.timeZones">
+            <label>
+                <input type="radio" name="timezone" ng-model="ctrl.selected" ng-value="timeZone">
+                <span data-ng-bind="timeZone.name"></span>
+            </label>
+        </div>
+    </form>
+</div>

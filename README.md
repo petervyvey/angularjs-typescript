@@ -1,1 +1,2 @@
 # angular-typescript
+AngularJS + TypeScript

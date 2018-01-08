@@ -1,0 +1,11 @@
+<div>
+    <pre>Model: {{ctrl.selected | json}}</pre>
+    <input  type="text" 
+            app-select-on-focus
+            uib-typeahead="country as country.name for country in ctrl.countries | filter:{name: $viewValue} | limitTo:8"
+            ng-model="ctrl.current" 
+            ng-model-options="ctrl.options" 
+            typeahead-select-on-exact="true" 
+            typeahead-on-select="ctrl.exact($item, $model, $label, $event)"
+            class="form-control">
+</div>

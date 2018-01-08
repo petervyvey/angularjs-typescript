@@ -1,0 +1,13 @@
+<div class="panel panel-default">
+    <div class="panel-heading panel-master__header" data-ng-class="{'panel-master__header--no-data':!ctrl.selectedCountry}">Countries</div>
+    <div class="panel-body">
+        <app-country-selector countries="ctrl.countries" selected-country="ctrl.selectedCountry" on-selection-changed="ctrl.onCountrySelectionChanged($args)"></app-country-selector>
+    </div>
+</div>
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading panel-master__header" data-ng-class="{'panel-master__header--no-data':!ctrl.selectedTimeZone}">Time zones</div>
+    <div class="panel-body">
+        <app-time-zone-selector time-zones="ctrl.timeZonesForSelectedCountry" selected-time-zone="ctrl.selectedTimeZone" on-selection-changed="ctrl.onTimeZoneSelectionChanged($args)"></app-time-zone-selector>
+    </div>
+</div>

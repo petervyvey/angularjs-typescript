@@ -1,0 +1,15 @@
+<div class="container-fluid">
+    <div class="row" data-ng-show="ctrl.isBusy">
+        <div class="col-md-6">
+            ... loading
+        </div>
+    </div>
+    <div class="row" data-ng-show="!ctrl.isBusy">
+        <div class="col-md-6">
+            <app-view-time-zone-master></app-view-time-zone-master>
+        </div>
+        <div class="col-md-6">
+            <app-view-time-zone-detail></app-view-time-zone-detail>
+        </div>
+    </div>
+</div>
