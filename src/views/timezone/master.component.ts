@@ -9,7 +9,7 @@ import { CountrySelector, TimeZoneSelector } from '../../components';
 import { Utils } from '../../lib';
 
 import { State, TimeZoneState } from '../../store';
-import { IController as ITimeZoneController } from './timezone.component';
+import { IController as ITimeZoneController } from './time-zone.component';
 
 import template from './master.template.html';
 import './master.style.scss';
@@ -55,9 +55,9 @@ class Controller {
         this.store
             .select(x => x.TimeZone)
             .takeUntil(this.destroyed$)
-            .takeWhile(zones => zones.timeZones.length === 0)
-            .subscribe(zones => {
-                if (zones.timeZones.length === 0) {
+            .takeWhile(state => state.timeZones.length === 0)
+            .subscribe(state => {
+                if (state.timeZones.length === 0) {
                     this.initData();
                 }
             });

@@ -1,10 +1,10 @@
 
-import { type } from '../../type';
+import { Utils } from '../../../lib';
 import { Action } from '@ngrx/store';
 
 import { Response } from '@services/time-zone-db-store';
 
-export const SET_TIME_ZONES = type('SET_TIME_ZONES');
+export const SET_TIME_ZONES = Utils.type('SET_TIME_ZONES');
 
 export interface ISetTimeZonesPayload {
     timeZones: Response.ITimeZoneInfo[];

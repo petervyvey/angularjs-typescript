@@ -1,10 +1,10 @@
 
-import { type } from '../../type';
+import { Utils } from '../../../lib';
 import { Action } from '@ngrx/store';
 
 import { Response } from '@services/time-zone-db-store';
 
-export const ADD_TIME_ZONE = type('ADD_TIME_ZONE');
+export const ADD_TIME_ZONE = Utils.type('ADD_TIME_ZONE');
 
 export interface IAddTimeZonePayload {
     zone: Response.ITimeZoneInfo;
