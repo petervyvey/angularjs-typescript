@@ -1,4 +1,4 @@
-﻿
+
 import * as angular from 'angular';
 
 import { module as NgRx } from '../lib/ngrx';

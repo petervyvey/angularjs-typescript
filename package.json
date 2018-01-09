@@ -13,7 +13,7 @@
 
     "build-step:dev": "webpack",
     "build-step:prd": "webpack -p",
-    "build-step:lint": "tslint ./src/**/*.ts --project .",
+    "build-step:lint": "tslint ./src/**/*.ts",
     
     "pipeline:clean": "npm run pipeline:clean:dev",
     "pipeline:clean:dev": "npm run clean-step:dist",
