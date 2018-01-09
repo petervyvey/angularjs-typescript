@@ -39,6 +39,7 @@ export class Controller {
 
     public $onDestroy() {
         this.destroyed$.next(true);
+        this.destroyed$.complete();
     }
 }
 

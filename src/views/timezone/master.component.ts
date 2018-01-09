@@ -29,6 +29,10 @@ class Controller {
 
     private destroyed$: Subject<boolean> = new Subject<boolean>();
 
+    private countries$: BehaviorSubject<CountrySelector.ICountryInfo[]> = new BehaviorSubject<CountrySelector.ICountryInfo[]>([]);
+    public get countries(): CountrySelector.ICountryInfo[] { return this.countries$.value; }
+    public set countries(value: CountrySelector.ICountryInfo[]) { this.countries$.next(value); }
+
     private timeZones$: BehaviorSubject<TimeZoneSelector.ITimeZoneInfo[]> = new BehaviorSubject<TimeZoneSelector.ITimeZoneInfo[]>([]);
     public get timeZones(): TimeZoneSelector.ITimeZoneInfo[] { return this.timeZones$.value; }
     public set timeZones(value: TimeZoneSelector.ITimeZoneInfo[]) { this.timeZones$.next(value); }
@@ -36,10 +40,6 @@ class Controller {
     private timeZonesForSelectedCountry$: BehaviorSubject<TimeZoneSelector.ITimeZoneInfo[]> = new BehaviorSubject<TimeZoneSelector.ITimeZoneInfo[]>([]);
     public get timeZonesForSelectedCountry(): TimeZoneSelector.ITimeZoneInfo[] { return this.timeZonesForSelectedCountry$.value; }
     public set timeZonesForSelectedCountry(value: TimeZoneSelector.ITimeZoneInfo[]) { this.timeZonesForSelectedCountry$.next(value); }
-
-    private countries$: BehaviorSubject<CountrySelector.ICountryInfo[]> = new BehaviorSubject<CountrySelector.ICountryInfo[]>([]);
-    public get countries(): CountrySelector.ICountryInfo[] { return this.countries$.value; }
-    public set countries(value: CountrySelector.ICountryInfo[]) { this.countries$.next(value); }
 
     private selectedCountry$: BehaviorSubject<CountrySelector.ICountryInfo> = new BehaviorSubject<CountrySelector.ICountryInfo>(undefined);
     public get selectedCountry(): CountrySelector.ICountryInfo { return this.selectedCountry$.value; }
@@ -65,6 +65,13 @@ class Controller {
 
     public $onDestroy() {
         this.destroyed$.next(true);
+        this.destroyed$.complete();
+
+        this.countries$.complete();
+        this.timeZones$.complete();
+        this.timeZonesForSelectedCountry$.complete();
+        this.selectedCountry$.complete();
+        this.selectedTimeZone$.complete();
     }
 
     public onCountrySelectionChanged(country: CountrySelector.ICountryInfo) {
@@ -75,7 +82,7 @@ class Controller {
 
     public onTimeZoneSelectionChanged(timeZone: TimeZoneSelector.ITimeZoneInfo) {
         // filter: ['criteria.1.language:NL', 'criteria.1.city:Brugge']
-        const params = { country: this.selectedCountry.code, timezone: timeZone.name, filter: ['criteria.1.language:NL', 'criteria.1.city:Brugge'] };
+        const params = { country: this.selectedCountry.code, timezone: timeZone.name };
         this.$state.go(this.$state.current.name, params);
     }
 
@@ -126,7 +133,6 @@ class Controller {
             .takeUntil(this.destroyed$)
             .filter(([params, selectedCountry, timeZones]) => !!params && !!selectedCountry && !!timeZones && timeZones.length > 0)
             .do(([params, selectedCountry, timeZones]) => {
-                console.log('params', params);
                 const timeZonesForSelectedCountry =
                     timeZones
                         .filter(x => x.countryCode.toLowerCase() === selectedCountry.code.toLowerCase());

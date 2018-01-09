@@ -28,6 +28,9 @@ export class Controller {
 
     public $onDestroy() {
         this.destroyed$.next(true);
+        this.destroyed$.complete();
+
+        this.timeZone$.complete();
     }
 
     private initSubscriptions() {

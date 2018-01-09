@@ -43,6 +43,9 @@ class Controller implements IController {
 
     public $onDestroy() {
         this.destroyed$.next(true);
+        this.destroyed$.complete();
+
+        this.isBusy$.complete();
     }
 }
 

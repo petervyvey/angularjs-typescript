@@ -31,7 +31,7 @@ export class QueryParamsService implements IQueryParamsService {
         private $rootScope: angular.IRootScopeService,
         private $transitions: TransitionService
     ) {
-        this.init();
+        this.onInit();
     }
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
@@ -46,9 +46,14 @@ export class QueryParamsService implements IQueryParamsService {
             .distinctUntilChanged((x, y) => x === y, x => angular.toJson(x))
             .share();
 
-    private init() {
-        this.$rootScope.$on('$destroy', () => this.destroyed$.next(true));
+    private onInit() {
+        this.$rootScope.$on('$destroy', () => this.onDestroy());
         this.$transitions.onSuccess({}, transition => this.params$.next(transition.params()));
+    }
+
+    private onDestroy() {
+        this.destroyed$.next(true);
+        this.destroyed$.complete();
     }
 }
 
