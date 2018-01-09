@@ -5,7 +5,8 @@ import { Response } from '@services/time-zone-db-store';
 import * as Action from './actions';
 
 type Actions
-    = Action.SetTimeZones
+    = Action.SetCountries
+    | Action.SetTimeZones
     | Action.AddTimeZone
     ;
 

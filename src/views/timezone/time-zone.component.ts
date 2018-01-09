@@ -2,11 +2,9 @@
 import * as angular from 'angular';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
-import { ICountryInfo, CountryInfo } from '@components/country-selector';
-import { ITimeZoneInfo, TimeZoneInfo } from '@components/time-zone-selector';
-import { TimeZoneDBStore, Response } from '@services/time-zone-db-store';
+import { Response } from '@services/time-zone-db-store';
 import { IQueryParamsService } from '@services/query-params-service';
-import { State } from '@store/index';
+import { State, TimeZoneState } from '@store/index';
 
 import template from './time-zone.template.html';
 import './time-zone.style.css';
@@ -15,7 +13,7 @@ export function filterTimeZoneByCountry() {
     return (timeZones: Response.ITimeZoneInfo[], countryCode: string) => {
         return timeZones
             .filter(x => x.countryCode === countryCode)
-            .map(x => ({ name: x.zoneName, offset: x.gmtOffset, countryCode: x.countryCode } as TimeZoneInfo));
+            .map(x => ({ name: x.zoneName, offset: x.gmtOffset, countryCode: x.countryCode } as TimeZoneState.Model.TimeZoneInfo));
     };
 }
 
