@@ -46,7 +46,6 @@ export class Controller {
                 .map(state => state.countries.find(country => country.isSelected))
                 .filter(country => !!country)
                 .map(country => country.timeZones.find(tz => tz.isSelected))
-                .do(() => this.$timeout())
                 .share();
 
         this.timeZone$

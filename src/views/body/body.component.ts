@@ -7,20 +7,33 @@ import { Observable, Subject } from 'rxjs';
 
 export class Controller {
     constructor(
-        private store: Store<State>
+        private store: Store<State>,
+        private $timeout: angular.ITimeoutService,
+        private $window: angular.IWindowService
     ) { }
 
     private destroyed$: Subject<boolean> = new Subject();
 
-    public application: Observable<ApplicationState.IState>;
+    public application$: Observable<ApplicationState.IState>;
 
     public $onInit() {
-        this.application = this.store.select(s => s.Application).takeUntil(this.destroyed$);
+        this.application$ =
+            this.store
+                .select(state => state.Application)
+                .takeUntil(this.destroyed$)
+                .do(() => this.$timeout());
+
+        this.initSubscriptions();
     }
 
     public $onDestroy() {
         this.destroyed$.next(true);
         this.destroyed$.complete();
+    }
+
+    private initSubscriptions() {
+        this.application$
+            .subscribe(state => this.$window.document.title = state.name);
     }
 }
 

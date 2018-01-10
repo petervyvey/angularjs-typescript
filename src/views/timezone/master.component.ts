@@ -131,7 +131,7 @@ class Controller {
 
         Observable.combineLatest(this.queryParamsService.current$, this.countries$)
             .takeUntil(this.destroyed$)
-            .debounceTime(1)
+            .debounceTime(25)
             .filter(([params, countries]) => !!params && !!countries && countries.length > 0)
             .do(([params]) => {
                 if (!!params.country && !params.timezone) {
