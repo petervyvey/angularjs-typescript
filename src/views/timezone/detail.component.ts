@@ -4,6 +4,8 @@ import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 import { TimeZoneDBStore, Response } from '@services/time-zone-db-store';
 import { IQueryParamsService } from '@services/query-params-service';
+import { Store } from '@lib/ngrx';
+import { State, TimeZoneState } from '../../store';
 
 import template from './detail.template.html';
 
@@ -11,38 +13,61 @@ export class Controller {
     constructor(
         private $timeout: angular.ITimeoutService,
         private queryParamsService: IQueryParamsService,
-        private timeZoneDBStore: TimeZoneDBStore
+        private timeZoneDBStore: TimeZoneDBStore,
+        private store: Store<State>
     ) {
         'ngInject';
     }
 
     private destroyed$: Subject<boolean> = new Subject<boolean>();
 
-    private timeZone$: BehaviorSubject<Response.IGetTimeZoneResponse> = new BehaviorSubject<Response.IGetTimeZoneResponse>(undefined);
-    public get timeZone(): Response.IGetTimeZoneResponse { return this.timeZone$.value; }
-    public set timeZone(value: Response.IGetTimeZoneResponse) { this.timeZone$.next(value); }
+    private state: Observable<TimeZoneState.IState>;
+
+    private timeZone$: Observable<TimeZoneState.Model.TimeZoneInfo>;
 
     public $onInit() {
+        this.state =
+            this.store
+                .select(store => store.TimeZone)
+                .takeUntil(this.destroyed$)
+                .do(state => this.$timeout());
+
         this.initSubscriptions();
     }
 
     public $onDestroy() {
         this.destroyed$.next(true);
         this.destroyed$.complete();
-
-        this.timeZone$.complete();
     }
 
     private initSubscriptions() {
-        Observable.combineLatest(this.queryParamsService.current$)
+        this.timeZone$ =
+            this.state
+                .map(state => state.countries.find(country => country.isSelected))
+                .filter(country => !!country)
+                .map(country => country.timeZones.find(tz => tz.isSelected))
+                .do(() => this.$timeout())
+                .share();
+
+        this.timeZone$
             .takeUntil(this.destroyed$)
-            .filter(([params]) => !!params && !!params.timezone)
-            .do(() => this.timeZone = null)
+            .filter(timezone => !!timezone)
             .debounceTime(1000)
-            .subscribe(([params]) => {
-                this.timeZoneDBStore.getTimeZone(params.timezone)
-                    .then(timezone => this.timeZone = timezone);
-            });
+            .do(timezone => {
+                if (!timezone.extra) {
+                    this.timeZoneDBStore.getTimeZone(timezone.name)
+                        .then(response =>
+                            this.store.dispatch(
+                                new TimeZoneState.Action.SetTimeZoneExtraInfo({
+                                    countryCode: timezone.countryCode,
+                                    timeZoneName: timezone.name,
+                                    extra: response
+                                })
+                            )
+                        );
+                }
+            })
+            .subscribe();
     }
 }
 

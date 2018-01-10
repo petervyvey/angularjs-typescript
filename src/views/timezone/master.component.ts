@@ -46,11 +46,8 @@ class Controller {
         this.state =
             this.store
                 .select(x => x.TimeZone)
-                .takeUntil(this.destroyed$);
-
-        this.state
-            .do(() => this.$timeout())
-            .subscribe();
+                .takeUntil(this.destroyed$)
+                .do(() => this.$timeout());
 
         this.state
             .takeWhile(state => state.countries.length === 0)
@@ -137,66 +134,13 @@ class Controller {
             .debounceTime(1)
             .filter(([params, countries]) => !!params && !!countries && countries.length > 0)
             .do(([params]) => {
-                this.store.dispatch(new TimeZoneState.Action.SelectCountry({ code: params.country }));
-            })
-            .do(([params]) => {
-                this.store.dispatch(new TimeZoneState.Action.SelectTimeZone({ countryCode: params.country, timeZoneName: params.timezone }));
+                if (!!params.country && !params.timezone) {
+                    this.store.dispatch(new TimeZoneState.Action.SelectCountry({ code: params.country }));
+                } else if (!!params.country && !!params.timezone) {
+                    this.store.dispatch(new TimeZoneState.Action.SelectTimeZone({ countryCode: params.country, timeZoneName: params.timezone }));
+                }
             })
             .subscribe();
-
-        // this.store
-        //     .select(x => x.TimeZone)
-        //     .takeUntil(this.destroyed$)
-        //     .map(state => {
-        //         const countries =
-        //             Utils
-        //                 .distinct(state.timeZones, z => z.countryCode)
-        //                 .map(z => new Model.CountryInfo(z.countryCode, z.countryName));
-
-        //         const timeZones =
-        //             state.timeZones
-        //                 .map(z => new Model.TimeZoneInfo(z.countryCode, z.gmtOffset, z.zoneName));
-
-        //         return [countries, timeZones];
-        //     })
-        //     .do(([countries, timeZones]: [CountrySelector.ICountryInfo[], Model.TimeZoneInfo[]]) => {
-        //         this.countries = countries;
-        //         this.timeZones = timeZones;
-        //     })
-        //     .subscribe();
-
-        // Observable.combineLatest(this.queryParamsService.current$, this.countries$)
-        //     .takeUntil(this.destroyed$)
-        //     .filter(([params, countries]) => !!params && !!params.country && !!countries && countries.length > 0)
-        //     .do(() => this.selectedTimeZone = null)
-        //     .map(([params, countries]) => params.country)
-        //     .subscribe(country =>
-        //         this.selectedCountry = this.countries.find(x => x.code.toLowerCase() === country.toLowerCase())
-        //     );
-
-        // Observable.combineLatest(this.queryParamsService.current$, this.selectedCountry$, this.timeZones$)
-        //     .takeUntil(this.destroyed$)
-        //     .filter(([params, selectedCountry, timeZones]) => !!params && !!selectedCountry && !!timeZones && timeZones.length > 0)
-        //     .do(([params, selectedCountry, timeZones]) => {
-        //         const timeZonesForSelectedCountry =
-        //             timeZones
-        //                 .filter(x => x.countryCode.toLowerCase() === selectedCountry.code.toLowerCase());
-
-        //         this.timeZonesForSelectedCountry.splice(0, this.timeZonesForSelectedCountry.length);
-        //         this.timeZonesForSelectedCountry.push(...timeZonesForSelectedCountry);
-        //     })
-        //     .map(([params, selectedCountry, timeZones]) => [params.timezone, selectedCountry, timeZones])
-        //     .subscribe(([timezone, selectedCountry, timeZones]) => {
-        //         this.$timeout(() => {
-        //             if (!!timezone) {
-        //                 this.selectedTimeZone = this.timeZonesForSelectedCountry.find(x => x.name.toLowerCase() === timezone.toLowerCase());
-        //             }
-
-        //             if (!this.selectedTimeZone) {
-        //                 this.selectedTimeZone = this.timeZonesForSelectedCountry[0];
-        //             }
-        //         });
-        //     });
     }
 }
 

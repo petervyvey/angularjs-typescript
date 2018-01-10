@@ -1,8 +1,8 @@
 <!-- TIME ZONE DETAIL: BEGIN -->
 <div class="panel panel-default">
-    <div class="panel-heading panel-master__header" data-ng-class="{'panel-master__header--no-data':!ctrl.timeZone}">Time zone</div>
+    <div class="panel-heading panel-master__header" data-ng-class="{'panel-master__header--no-data':!(ctrl.timeZone$ | async)}">Time zone</div>
     <div class="panel-body">
-        <pre>Model: {{ctrl.timeZone | json}}</pre>
+        <pre>Model: {{ctrl.timeZone$ | async | json}}</pre>
     </div>
 </div>
 <!-- TIME ZONE DETAIL: END -->

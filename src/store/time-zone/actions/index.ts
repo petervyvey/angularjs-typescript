@@ -1,6 +1,6 @@
 
 export * from './set-countries';
 export * from './select-country';
-export * from './add-time-zone';
+export * from './set-time-zone-extra-info';
 
 export * from './select-time-zone';

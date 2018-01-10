@@ -7,7 +7,7 @@ import * as Action from './actions';
 type Actions
     = Action.SetCountries
     | Action.SelectCountry
-    | Action.AddTimeZone
+    | Action.SetTimeZoneExtraInfo
     | Action.SelectTimeZone
     ;
 
