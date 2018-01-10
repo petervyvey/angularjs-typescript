@@ -11,10 +11,10 @@ import template from './detail.template.html';
 
 export class Controller {
     constructor(
+        private store: Store<State>,
         private $timeout: angular.ITimeoutService,
         private queryParamsService: IQueryParamsService,
-        private timeZoneDBStore: TimeZoneDBStore,
-        private store: Store<State>
+        private timeZoneDBStore: TimeZoneDBStore
     ) {
         'ngInject';
     }

@@ -113,14 +113,6 @@ function getCountryByCode(countries: Model.CountryInfo[], code: string): Model.C
 function getTimeZoneByName(timeZones: Model.TimeZoneInfo[], name: string): Model.TimeZoneInfo {
     let timeZone: Model.TimeZoneInfo = null;
     if (timeZones.length) {
-
-        timeZones
-            .filter(x => x.isSelected)
-            .map(x => {
-                x.isSelected = false;
-                return x;
-            });
-
         timeZone = timeZones.find(x => x.name === name);
     }
 

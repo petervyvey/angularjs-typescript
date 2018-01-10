@@ -16,11 +16,11 @@ import './master.style.scss';
 
 class Controller {
     constructor(
+        private store: Store<State>,
         private $state: angular.ui.IStateService,
         private $timeout: angular.ITimeoutService,
         private queryParamsService: IQueryParamsService,
-        private timeZoneDBStore: TimeZoneDBStore,
-        private store: Store<State>
+        private timeZoneDBStore: TimeZoneDBStore
     ) {
         'ngInject';
     }
