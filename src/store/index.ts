@@ -35,11 +35,11 @@ const module =
                     Application: {
                         name: APPLICATION_NAME,
                         version: APPLICATION_VERSION
-                    },
+                    } as ApplicationState.IState,
 
                     TimeZone: {
-                        timeZones: []
-                    }
+                        countries: []
+                    } as TimeZoneState.IState
                 });
             }
         ]);

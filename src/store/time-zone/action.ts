@@ -6,8 +6,9 @@ import * as Action from './actions';
 
 type Actions
     = Action.SetCountries
-    | Action.SetTimeZones
+    | Action.SelectCountry
     | Action.AddTimeZone
+    | Action.SelectTimeZone
     ;
 
 export { Actions, Action };

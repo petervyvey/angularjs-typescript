@@ -17,6 +17,8 @@ export class Controller {
         this.current = !!this.selected ? this.selected.name : null;
     }
 
+    public isCollapsed: boolean = true;
+
     public options = {
         debounce: {
             default: 250,

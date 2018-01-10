@@ -18,14 +18,16 @@ export class Controller {
     public get selected(): ITimeZoneInfo { return this.selected$.value; }
     public set selected(value: ITimeZoneInfo) { this.selected$.next(value); }
 
+    public isCollapsed: boolean = true;
+
     // tslint:disable-next-line:variable-name
     public onSelectionChanged: ({ $args: ICountryInfo }) => void;
 
     public $onInit() {
-        this.timeZones$
-            .takeUntil(this.destroyed$)
-            .filter(x => !!x && x.length > 0)
-            .subscribe(x => this.selected = x[0]);
+        // this.timeZones$
+        //     .takeUntil(this.destroyed$)
+        //     .filter(x => !!x && x.length > 0)
+        //     .subscribe(x => this.selected = x[0]);
 
         this.selected$
             .takeUntil(this.destroyed$)

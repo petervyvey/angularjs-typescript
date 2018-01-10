@@ -1,5 +1,4 @@
-<div>
-    <pre>Model: {{ctrl.selected | json}}</pre>
+<div>    
     <form>
         <div data-ng-repeat="timeZone in ctrl.timeZones">
             <label>
@@ -8,4 +7,14 @@
             </label>
         </div>
     </form>
+    <div class="row" style="padding-top: 10px;">
+        <div class="col-sm-12">
+            <button type="button" class="btn btn-primary pull-right" data-ng-click="ctrl.isCollapsed = !ctrl.isCollapsed">Show model</button>
+        </div>
+    </div>
+    <div class="row" style="padding-top: 10px;" uib-collapse="ctrl.isCollapsed">
+        <div class="col-sm-12">
+            <pre>Model: {{ctrl.selected | json}}</pre>
+        </div>
+    </div>
 </div>

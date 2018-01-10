@@ -28,18 +28,11 @@ class Controller {
     public parent: ITimeZoneController;
 
     private destroyed$: Subject<boolean> = new Subject<boolean>();
+    private state: Observable<TimeZoneState.IState>;
 
-    private countries$: BehaviorSubject<CountrySelector.ICountryInfo[]> = new BehaviorSubject<CountrySelector.ICountryInfo[]>([]);
-    public get countries(): CountrySelector.ICountryInfo[] { return this.countries$.value; }
-    public set countries(value: CountrySelector.ICountryInfo[]) { this.countries$.next(value); }
+    private countries$: Observable<CountrySelector.ICountryInfo[]>;
 
-    private timeZones$: BehaviorSubject<TimeZoneSelector.ITimeZoneInfo[]> = new BehaviorSubject<TimeZoneSelector.ITimeZoneInfo[]>([]);
-    public get timeZones(): TimeZoneSelector.ITimeZoneInfo[] { return this.timeZones$.value; }
-    public set timeZones(value: TimeZoneSelector.ITimeZoneInfo[]) { this.timeZones$.next(value); }
-
-    private timeZonesForSelectedCountry$: BehaviorSubject<TimeZoneSelector.ITimeZoneInfo[]> = new BehaviorSubject<TimeZoneSelector.ITimeZoneInfo[]>([]);
-    public get timeZonesForSelectedCountry(): TimeZoneSelector.ITimeZoneInfo[] { return this.timeZonesForSelectedCountry$.value; }
-    public set timeZonesForSelectedCountry(value: TimeZoneSelector.ITimeZoneInfo[]) { this.timeZonesForSelectedCountry$.next(value); }
+    private timeZones$: Observable<TimeZoneSelector.ITimeZoneInfo[]>;
 
     private selectedCountry$: BehaviorSubject<CountrySelector.ICountryInfo> = new BehaviorSubject<CountrySelector.ICountryInfo>(undefined);
     public get selectedCountry(): CountrySelector.ICountryInfo { return this.selectedCountry$.value; }
@@ -50,32 +43,35 @@ class Controller {
     public set selectedTimeZone(value: TimeZoneSelector.ITimeZoneInfo) { this.selectedTimeZone$.next(value); }
 
     public $onInit() {
-        this.initSubscriptions();
+        this.state =
+            this.store
+                .select(x => x.TimeZone)
+                .takeUntil(this.destroyed$);
 
-        this.store
-            .select(x => x.TimeZone)
-            .takeUntil(this.destroyed$)
-            .takeWhile(state => state.timeZones.length === 0)
+        this.state
+            .do(() => this.$timeout())
+            .subscribe();
+
+        this.state
+            .takeWhile(state => state.countries.length === 0)
             .subscribe(state => {
-                if (state.timeZones.length === 0) {
+                if (state.countries.length === 0) {
                     this.initData();
                 }
             });
+
+        this.initSubscriptions();
     }
 
     public $onDestroy() {
         this.destroyed$.next(true);
         this.destroyed$.complete();
 
-        this.countries$.complete();
-        this.timeZones$.complete();
-        this.timeZonesForSelectedCountry$.complete();
         this.selectedCountry$.complete();
         this.selectedTimeZone$.complete();
     }
 
     public onCountrySelectionChanged(country: CountrySelector.ICountryInfo) {
-        this.selectedTimeZone = null;
         const params = { country: country.code, timezone: null };
         this.$state.go(this.$state.current.name, params);
     }
@@ -107,14 +103,46 @@ class Controller {
 
                 return countries;
             })
-            .do(x => console.log('countries', x))
-            // .do(response => this.store.dispatch(new TimeZoneState.Action.SetTimeZones({ timeZones: response.zones })))
+            .do(countries => this.store.dispatch(new TimeZoneState.Action.SetCountries({ countries })))
             .catch(error => Observable.throw(error))
             .finally(() => this.parent.isBusy = false)
             .subscribe();
     }
 
     private initSubscriptions() {
+
+        this.state
+            .map(state => state.countries.find(x => x.isSelected))
+            .subscribe(country => {
+                this.selectedCountry = country;
+                if (!!country) {
+                    this.selectedTimeZone = country.timeZones.find(x => x.isSelected);
+                }
+            });
+
+        this.countries$ =
+            this.state
+                .map(state => state.countries)
+                .share();
+
+        this.timeZones$ =
+            this.state
+                .map(state => state.countries.find(x => x.isSelected))
+                .filter(country => !!country)
+                .map(country => country.timeZones)
+                .share();
+
+        Observable.combineLatest(this.queryParamsService.current$, this.countries$)
+            .takeUntil(this.destroyed$)
+            .debounceTime(1)
+            .filter(([params, countries]) => !!params && !!countries && countries.length > 0)
+            .do(([params]) => {
+                this.store.dispatch(new TimeZoneState.Action.SelectCountry({ code: params.country }));
+            })
+            .do(([params]) => {
+                this.store.dispatch(new TimeZoneState.Action.SelectTimeZone({ countryCode: params.country, timeZoneName: params.timezone }));
+            })
+            .subscribe();
 
         // this.store
         //     .select(x => x.TimeZone)
