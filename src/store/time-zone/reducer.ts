@@ -27,6 +27,14 @@ export const Reducer: ActionReducer<IState> = (state: IState, action: Actions) =
 
         case Action.SELECT_COUNTRY: {
             const payload = action.payload as ISelectCountryPayload;
+
+            state.countries
+                .filter(x => x.isSelected)
+                .map(x => {
+                    x.isSelected = false;
+                    return x;
+                });
+
             const country = getCountryByCode(state.countries, payload.code);
             if (!!country) {
                 country.isSelected = true;
@@ -45,6 +53,14 @@ export const Reducer: ActionReducer<IState> = (state: IState, action: Actions) =
 
         case Action.SELECT_TIME_ZONE: {
             const payload = action.payload as ISelectTimeZonePayload;
+
+            state.countries
+                .filter(x => x.isSelected)
+                .map(x => {
+                    x.isSelected = false;
+                    return x;
+                });
+
             const country = getCountryByCode(state.countries, payload.countryCode);
             if (!!country) {
                 country.isSelected = true;
@@ -88,14 +104,6 @@ export const Reducer: ActionReducer<IState> = (state: IState, action: Actions) =
 function getCountryByCode(countries: Model.CountryInfo[], code: string): Model.CountryInfo {
     let country: Model.CountryInfo = null;
     if (countries.length) {
-
-        countries
-            .filter(x => x.isSelected)
-            .map(x => {
-                x.isSelected = false;
-                return x;
-            });
-
         country = countries.find(x => x.code === code);
     }
 

@@ -8,7 +8,7 @@ import { module as Components } from '../components';
 import { Body } from './body';
 import { Home, State as HomeState } from './home';
 import { ViewLayout, Content, Navigation } from './view-layout';
-import { TimeZone, Master, Detail, State as TimeZoneState } from './timezone';
+import { TimeZone, Master, Detail, State as TimeZoneState } from './time-zone';
 
 // Create module and add dependencies.
 const module =
