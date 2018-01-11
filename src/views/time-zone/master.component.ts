@@ -8,16 +8,17 @@ import { IQueryParamsService } from '@services/query-params-service';
 import { TimeZoneDBStore, Response } from '@services/time-zone-db-store';
 import { CountrySelector, TimeZoneSelector } from '../../components';
 
+import { StateService } from '@uirouter/angularjs';
 import { State, TimeZoneState } from '../../store';
 import { IController as ITimeZoneController } from './time-zone.component';
 
 import template from './master.template.html';
 import './master.style.scss';
 
-class Controller {
+export class Controller {
     constructor(
         private store: Store<State>,
-        private $state: angular.ui.IStateService,
+        private $state: StateService,
         private $timeout: angular.ITimeoutService,
         private queryParamsService: IQueryParamsService,
         private timeZoneDBStore: TimeZoneDBStore

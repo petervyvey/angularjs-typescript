@@ -8,11 +8,11 @@ export const config = [
         $stateProvider: StateProvider
     ) => {
         $stateProvider
-            .state('application.home', {
-                url: '/home',
+            .state('application.population', {
+                url: '/population',
                 views: {
                     'content@': {
-                        template: '<app-view-home></app-view-home>'
+                        template: '<app-view-population></app-view-population>'
                     }
                 }
             });

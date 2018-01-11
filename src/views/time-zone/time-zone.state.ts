@@ -1,11 +1,11 @@
 
 import * as angular from 'angular';
-import '@uirouter/angularjs';
+import { StateProvider } from '@uirouter/angularjs';
 
 export const config = [
     '$stateProvider',
     (
-        $stateProvider: angular.ui.IStateProvider
+        $stateProvider: StateProvider
     ) => {
         $stateProvider
             .state('application.timezone', {

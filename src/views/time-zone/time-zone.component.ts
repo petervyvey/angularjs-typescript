@@ -1,5 +1,6 @@
 
 import * as angular from 'angular';
+import { StateService } from '@uirouter/core';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 import { Response } from '@services/time-zone-db-store';
@@ -23,7 +24,7 @@ export interface IController {
 
 class Controller implements IController {
     constructor(
-        private $state: angular.ui.IStateService,
+        private $state: StateService,
         private queryParamsService: IQueryParamsService
     ) {
         'ngInject';

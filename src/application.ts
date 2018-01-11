@@ -6,10 +6,10 @@ import 'bootstrap/dist/js/bootstrap.js';
 
 import 'core-js';
 import 'angular-route';
-import '@uirouter/core';
 import '@uirouter/angularjs';
 import 'angular-ui-bootstrap/dist/ui-bootstrap-tpls';
 import 'angular1-async-filter';
+import { StateProvider } from '@uirouter/angularjs';
 
 import * as Environment from './application.environment';
 import * as Constants from './application.constants';
@@ -17,6 +17,7 @@ import * as Services from './services';
 import * as Store from './store';
 import * as Components from './components';
 import * as Views from './views';
+
 import './application.style.scss';
 
 const module =
@@ -43,7 +44,7 @@ const module =
                 })
                 ;
         }])
-        .config(['$stateProvider', ($stateProvider: angular.ui.IStateProvider) => {
+        .config(['$stateProvider', ($stateProvider: StateProvider) => {
             $stateProvider
                 .state('application', {
                     url: '',
