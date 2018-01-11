@@ -5,7 +5,7 @@ import { Action } from '@ngrx/store';
 export const SET_APPLICATION_NAME = Utils.type('SET_APPLICATION_NAME');
 
 export interface ISetApplicationName {
-    name: string[];
+    name: string;
 }
 
 export class SetApplicationName implements Action {

@@ -3,9 +3,17 @@
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
-                <div class="panel-heading panel-default__heading">Time zone</div>
-                <div class="panel-body">
-                    <pre>Model: {{ctrl.timeZone$ | async | json}}</pre>
+                <div class="panel-heading panel-default__heading">Application parameter</div>
+                <div class="panel-body">                    
+                    <form data-ng-submit="ctrl.submit()">
+                        <div class="form-group">
+                          <input    type="text" id="applicationName" class="form-control" placeholder="application name" autocomplete="off"
+                                    app-select-on-focus
+                                    data-ng-model="ctrl.applicationName" 
+                                    data-ng-model-options="{ updateOn: 'blur' }" />
+                        </div>
+                        <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                      </form>
                 </div>
             </div>
         </div>

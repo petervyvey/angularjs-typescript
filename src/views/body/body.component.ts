@@ -33,7 +33,9 @@ export class Controller {
 
     private initSubscriptions() {
         this.application$
-            .subscribe(state => this.$window.document.title = state.name);
+            .takeUntil(this.destroyed$)
+            .map(state => state.name)
+            .subscribe(name => this.$window.document.title = name);
     }
 }
 
