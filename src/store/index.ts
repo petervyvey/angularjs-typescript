@@ -38,7 +38,9 @@ const module =
                     } as ApplicationState.IState,
 
                     TimeZone: {
-                        countries: []
+                        countries: [],
+                        selectedCountry: null,
+                        selectedTimeZone: null
                     } as TimeZoneState.IState
                 });
             }

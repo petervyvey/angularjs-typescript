@@ -1,8 +1,13 @@
 <!-- HOME VIEW: BEGIN -->
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
-            <div>HOME</div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading panel-default__heading">Time zone</div>
+                <div class="panel-body">
+                    <pre>Model: {{ctrl.timeZone$ | async | json}}</pre>
+                </div>
+            </div>
         </div>
     </div>
 </div>

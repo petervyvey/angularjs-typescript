@@ -1,0 +1,18 @@
+
+.panel-heading{
+
+    &.panel-default {
+
+        &__heading {
+            color: white;
+            font-weight: bold;
+            background-color: orange;
+
+            -webkit-transition: background-color 0.3s, color 0.3s; /* Safari */
+            transition: background-color 0.3s, color 0.3s;
+            
+        }
+
+    }
+
+}
