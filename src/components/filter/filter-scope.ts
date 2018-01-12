@@ -1,15 +1,14 @@
 
 import { BehaviorSubject, Subject } from 'rxjs';
-import { FilterService } from './filter-service';
+import { FilterService } from '../../services';
 import { Controller as CheckboxGroupPropsController } from './checkbox-group-props';
 import { Controller as CriteriaPropsController } from './criteria-props';
-import { ICriterion } from './criterion';
 
 export interface IFilterScopeRegistrableController {
     all: boolean;
     some: boolean;
     reset(): void;
-    setCriterion(criterion: ICriterion);
+    setCriterion(criterion: FilterService.ICriterion);
 }
 
 export class Controller {
@@ -19,7 +18,7 @@ export class Controller {
     ];
 
     constructor(
-        private filterService: FilterService
+        private filterService: FilterService.FilterService
     ) { }
 
     public scopeNameValue: string;
@@ -57,7 +56,7 @@ export class Controller {
     }
 
     public destroy() {
-        this.filterService.destroyScope(this.name);
+        // this.filterService.destroyScope(this.name);
 
         this.name$.complete();
 

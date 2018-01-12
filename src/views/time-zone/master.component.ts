@@ -120,6 +120,7 @@ export class Controller {
 
         this.countries$ =
             this.state
+                .select(x => x)
                 .map(state => state.countries)
                 .share();
 

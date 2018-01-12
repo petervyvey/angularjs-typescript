@@ -1,10 +1,9 @@
 ﻿
 import { BehaviorSubject, Subject } from 'rxjs';
-import { ICriterion } from './criterion';
-import { FilterService } from './filter-service';
+import { FilterService } from '../../services';
 
 export class Controller {
-    public criterion$: BehaviorSubject<ICriterion> = new BehaviorSubject<ICriterion>(undefined);
+    public criterion$: BehaviorSubject<FilterService.ICriterion> = new BehaviorSubject<FilterService.ICriterion>(undefined);
     public reset$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
@@ -19,7 +18,7 @@ export class Controller {
 }
 
 export class Directive implements ng.IDirective {
-    constructor(private filter: FilterService) { }
+    constructor(private filter: FilterService.FilterService) { }
 
     public bindToController = true;
     public controller = Controller;
@@ -31,12 +30,12 @@ export class Directive implements ng.IDirective {
     }
 
     public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, controller: Controller) {
-        this.filter.reset$
-            .takeUntil(controller.destroyed$)
-            .subscribe(x => controller.reset$.next(x));
+        // this.filter.reset$
+        //     .takeUntil(controller.destroyed$)
+        //     .subscribe(x => controller.reset$.next(x));
 
         scope.$on('$destroy', () => controller.destroy());
     }
 }
 
-export const DirectiveFactory = ['attHealthatworkCoreFilterService', (filterService: FilterService) => new Directive(filterService)];
+export const DirectiveFactory = ['attHealthatworkCoreFilterService', (filterService: FilterService.FilterService) => new Directive(filterService)];

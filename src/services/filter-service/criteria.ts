@@ -1,25 +1,26 @@
 ﻿
 import { ICriterion, ICriterionIndexer } from './criterion';
 
+export interface ICriteriaIndexer {
+    [name: string]: ICriteria;
+}
+
 export interface ICriteria {
-    scope: string;
     name: string;
-    items: ICriterionIndexer;
+    criterion: ICriterionIndexer;
 
     setCriterion(criterion: ICriterion);
 }
 
 export class Criteria implements ICriteria {
-    constructor(scope: string, name: string) {
-        this.scope = scope;
+    constructor(name: string) {
         this.name = name;
     }
 
-    public scope: string;
     public name: string;
-    public items: ICriterionIndexer = {};
+    public criterion: ICriterionIndexer = {};
 
     public setCriterion(criterion: ICriterion) {
-        this.items[criterion.name] = criterion;
+        this.criterion[criterion.name] = criterion;
     }
 }
