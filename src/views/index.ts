@@ -9,7 +9,7 @@ import { Body } from './body';
 import { Home, State as HomeState } from './home';
 import { ViewLayout, Content, Navigation } from './view-layout';
 import { TimeZone, Master, Detail, State as TimeZoneState } from './time-zone';
-import { Population, State as PopulationState } from './population';
+import { Population, Components as PopulationComponents, State as PopulationState } from './population';
 
 // Create module and add dependencies.
 const module =
@@ -23,7 +23,8 @@ const module =
         TimeZone.module.name,
         Master.module.name,
         Detail.module.name,
-        Population.module.name
+        Population.module.name,
+        PopulationComponents.module.name
     ])
         .config(HomeState.config)
         .config(TimeZoneState.config)

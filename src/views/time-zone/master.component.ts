@@ -55,6 +55,8 @@ export class Controller {
             .subscribe(state => {
                 if (state.countries.length === 0) {
                     this.initData();
+                } else {
+                    this.store.dispatch(new TimeZoneState.Action.Refresh());
                 }
             });
 
@@ -120,9 +122,7 @@ export class Controller {
 
         this.countries$ =
             this.state
-                .select(x => x)
-                .map(state => state.countries)
-                .share();
+                .map(state => state.countries);
 
         this.timeZones$ =
             this.state

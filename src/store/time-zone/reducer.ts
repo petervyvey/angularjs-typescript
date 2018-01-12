@@ -17,6 +17,12 @@ export const Reducer: ActionReducer<IState> = (state: IState, action: Actions) =
 
     switch (action.type) {
 
+        case Action.REFRESH: {
+            state = Object.assign({}, state);
+
+            return state;
+        }
+
         case Action.SET_COUNTRIES: {
             const payload = action.payload as Action.ISetCountriesPayload;
             state.countries = [].concat(payload.countries.map(x => Object.assign({}, x)));
