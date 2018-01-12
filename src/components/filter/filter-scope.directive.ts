@@ -1,8 +1,10 @@
 
+import * as angular from 'angular';
 import { BehaviorSubject, Subject } from 'rxjs';
+
 import { FilterService } from '../../services';
-import { Controller as CheckboxGroupPropsController } from './checkbox-group-props';
-import { Controller as CriteriaPropsController } from './criteria-props';
+import { Controller as CheckboxGroupPropsController } from './checkbox-group-props.directive';
+import { Controller as CriteriaPropsController } from './criteria-props.directive';
 
 export interface IFilterScopeRegistrableController {
     all: boolean;
@@ -14,12 +16,14 @@ export interface IFilterScopeRegistrableController {
 export class Controller {
 
     public static $inject = [
-        'attHealthatworkCoreFilterService'
+        'filterService'
     ];
 
     constructor(
         private filterService: FilterService.FilterService
-    ) { }
+    ) {
+        console.log('filter-scope', this);
+    }
 
     public scopeNameValue: string;
 
@@ -88,4 +92,6 @@ export class Directive implements angular.IDirective {
     }
 }
 
-export const DirectiveFactory = () => new Directive();
+export const module =
+    angular.module('application.component.appFilterScope', [])
+        .directive('appFilterScope', () => new Directive());

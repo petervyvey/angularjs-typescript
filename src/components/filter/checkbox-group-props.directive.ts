@@ -1,8 +1,11 @@
 
+import * as angular from 'angular';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 export class Controller {
     constructor() {
+        console.log('checkbox-group-props', this);
+
         this.models$.filter(x => !!x)
             .takeUntil(this.destroyed$)
             .subscribe(x => {
@@ -76,4 +79,6 @@ export class Directive implements ng.IDirective {
     }
 }
 
-export const DirectiveFactory = [() => new Directive()];
+export const module =
+    angular.module('application.component.appFilterCheckboxGroupProps', [])
+        .directive('appFilterCheckboxGroupProps', () => new Directive());

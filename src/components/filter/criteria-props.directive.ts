@@ -1,8 +1,13 @@
 ﻿
+import * as angular from 'angular';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { FilterService } from '../../services';
 
 export class Controller {
+
+    constructor() {
+        console.log('criteria-props', this);
+    }
     public criterion$: BehaviorSubject<FilterService.ICriterion> = new BehaviorSubject<FilterService.ICriterion>(undefined);
     public reset$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
 
@@ -38,4 +43,9 @@ export class Directive implements ng.IDirective {
     }
 }
 
-export const DirectiveFactory = ['attHealthatworkCoreFilterService', (filterService: FilterService.FilterService) => new Directive(filterService)];
+export const module =
+    angular.module('application.component.appFilterCriteriaProps', [])
+        .directive('appFilterCriteriaProps', [
+            'filterService',
+            (filterService: FilterService.FilterService) => new Directive(filterService)
+        ]);
