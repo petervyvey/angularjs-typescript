@@ -9,10 +9,6 @@ export class Controller {
     constructor(
         private filterService: FilterService
     ) { }
-
-    public $onInit() {
-        console.log('population', this);
-    }
 }
 
 export const module =

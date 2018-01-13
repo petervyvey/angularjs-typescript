@@ -4,8 +4,6 @@ import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 export class Controller {
     constructor() {
-        console.log('checkbox-group-props', this);
-
         this.models$.filter(x => !!x)
             .takeUntil(this.destroyed$)
             .subscribe(x => {
@@ -41,15 +39,23 @@ export class Controller {
     public toggleAll$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public all$: Observable<boolean> =
-        this.change$.filter(x => !!x)
+        this.change$
+            .filter(x => !!x)
             .scan((r: number, model: angular.INgModelController) => r + (model.$viewValue ? 1 : -1), 0)
             .map(x => this.models.length === x)
             .share();
 
     public some$: Observable<boolean> =
-        this.change$.filter(x => !!x)
+        this.change$
+            .filter(x => !!x)
             .scan((r: number, model: angular.INgModelController) => r + (model.$viewValue ? 1 : -1), 0)
             .map(x => x !== 0 && this.models.length !== x)
+            .share();
+
+    public indeterminate$: Observable<boolean> =
+        Observable.combineLatest(this.some$, this.all$)
+            .takeUntil(this.destroyed$)
+            .map(([some, all]) => some && !all)
             .share();
 
     private models: angular.INgModelController[] = [];

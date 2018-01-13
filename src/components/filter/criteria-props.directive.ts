@@ -5,9 +5,6 @@ import { FilterService } from '../../services';
 
 export class Controller {
 
-    constructor() {
-        console.log('criteria-props', this);
-    }
     public criterion$: BehaviorSubject<FilterService.ICriterion> = new BehaviorSubject<FilterService.ICriterion>(undefined);
     public reset$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
 

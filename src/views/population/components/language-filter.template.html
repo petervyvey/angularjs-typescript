@@ -1,7 +1,8 @@
 <!-- LANGUAGE FILTER COMPONENT: BEGIN -->
 <div class="checkbox" style="border-bottom: solid 1px #ddd; padding-bottom: 4px;">
     <label>
-        <input type="checkbox"> <span style="font-weight: bold;">Language</span>
+        <input type="checkbox" data-ng-model="ctrl.checked" data-ng-click="ctrl.onClicked()" data-ng-attr-indeterminate="{{ ctrl.checkboxGroup.indeterminate$ | async }}">
+        <span style="font-weight: bold;">Language</span>
     </label>
 </div>
 <app-view-population-filter-language-checkbox language="'NL'"></app-view-population-filter-language-checkbox>

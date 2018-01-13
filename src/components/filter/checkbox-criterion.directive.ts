@@ -12,18 +12,12 @@ export class Directive implements ng.IDirective {
     }
 
     public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, [controller, group, criteria]: [angular.INgModelController, CheckboxGroupProps, CriteriaPropsController]) {
-        console.log('link', element);
-        console.log('link.controller', controller);
-        console.log('link.group', group);
-        console.log('link.criteria', criteria);
-
         if (!$(element).is(':checkbox')) { return; }
 
         if (group) {
             group.models$.next(controller);
             controller.$viewChangeListeners.push(() => {
                 group.change$.next(controller);
-                console.log('value', controller.$modelValue);
             });
         }
 
@@ -35,4 +29,4 @@ export class Directive implements ng.IDirective {
 
 export const module =
     angular.module('application.component.appFilterCriterion', [])
-        .directive('appFilterCriterion', () => new Directive());
+        .directive('appFilterCheckboxCriterion', () => new Directive());

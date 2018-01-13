@@ -21,9 +21,7 @@ export class Controller {
 
     constructor(
         private filterService: FilterService.FilterService
-    ) {
-        console.log('filter-scope', this);
-    }
+    ) { }
 
     public scopeNameValue: string;
 
