@@ -4,22 +4,6 @@ import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 export class Controller {
     constructor() {
-        this.models$.filter(x => !!x)
-            .takeUntil(this.destroyed$)
-            .subscribe(x => {
-                const index: number = this.models.indexOf(x);
-                if (index === -1) { this.models.push(x); }
-            });
-
-        this.unregister$.filter(x => !!x)
-            .takeUntil(this.destroyed$)
-            .subscribe(x => {
-                const index = this.models.indexOf(x);
-                if (index !== -1) {
-                    this.models.splice(index, 1);
-                }
-            });
-
         this.toggleAll$
             .takeUntil(this.destroyed$)
             .subscribe(x => {
@@ -32,10 +16,8 @@ export class Controller {
 
     private destroyed$: Subject<boolean> = new Subject<boolean>();
 
-    public models$: BehaviorSubject<angular.INgModelController> = new BehaviorSubject<angular.INgModelController>(undefined);
-    public unregister$: BehaviorSubject<angular.INgModelController> = new BehaviorSubject<angular.INgModelController>(undefined);
     public change$: BehaviorSubject<angular.INgModelController> = new BehaviorSubject<angular.INgModelController>(undefined);
-    public checked$: BehaviorSubject<{ name: string, checked: boolean }> = new BehaviorSubject<{ name: string, checked: boolean }>(undefined);
+
     public toggleAll$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public all$: Observable<boolean> =
@@ -60,8 +42,17 @@ export class Controller {
 
     private models: angular.INgModelController[] = [];
 
+    public registerModel(model: angular.INgModelController) {
+        const index: number = this.models.indexOf(model);
+        if (index === -1) { this.models.push(model); }
+    }
+
+    public unregisterModel(model: angular.INgModelController) {
+        const index = this.models.indexOf(model);
+        if (index !== -1) { this.models.splice(index, 1); }
+    }
+
     public destroy() {
-        this.models$.complete();
         this.change$.complete();
         this.toggleAll$.complete();
 
@@ -73,7 +64,7 @@ export class Controller {
 export class Directive implements ng.IDirective {
     public bindToController = true;
     public controller = Controller;
-    public controllerAs = 'ctrl';
+    public controllerAs = '$appFilterCheckboxGroupProps';
     public restrict = 'A';
 
     public compile() {

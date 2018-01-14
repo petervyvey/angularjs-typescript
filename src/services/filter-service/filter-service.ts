@@ -1,29 +1,41 @@
 ﻿
+import * as angular from 'angular';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 import { IScope, Scope, IScopeIndexer } from './scope';
-import { ICriteria, Criteria } from './criteria';
-
-export interface ICriteriaEvent {
-    scope: string;
-    criteria: ICriteria;
-}
+import { StateService } from '@uirouter/angularjs';
 
 export class FilterService {
-    constructor() {
-        this.criteria$.filter(x => !!x).subscribe(x => this.onChanged(x));
+    constructor(
+        private $timeout: angular.ITimeoutService,
+        private $state: StateService
+    ) {
+        this.onInit();
     }
 
     public scope: IScopeIndexer = {};
 
-    public criteria$: BehaviorSubject<ICriteriaEvent> = new BehaviorSubject<ICriteriaEvent>(undefined);
+    public scope$: BehaviorSubject<IScope> = new BehaviorSubject<IScope>(undefined);
 
-    private onChanged(event: ICriteriaEvent) {
-        if (!this.scope[event.scope]) {
-            this.scope[event.scope] = new Scope(event.scope);
+    public onInit() {
+        console.log('service', this);
+        this.scope$
+            .filter(scope => !!scope)
+            .debounceTime(100)
+            .subscribe(scope =>
+                this.$timeout(() =>
+                    this.$state.go(this.$state.$current.name, angular.extend(this.$state.params, { filter: 'test' }))
+                )
+            );
+    }
+
+    public onScopeChanged(scope: IScope) {
+        if (!scope || !!scope && !scope.code) {
+            throw new Error('Scope code is empty/null/undefined.');
         }
 
-        this.scope[event.scope].setCriteria(event.criteria);
+        this.scope[scope.code] = scope;
+        this.scope$.next(scope);
     }
 
     // public reset$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);

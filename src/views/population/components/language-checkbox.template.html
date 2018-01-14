@@ -1,7 +1,7 @@
 <!-- LANGUAGE COMPONENT: BEGIN -->
 <div class="checkbox">
     <label>
-        <input type="checkbox" data-ng-model="ctrl.checked" app-filter-checkbox-criterion> {{ ctrl.language }}
+        <input type="checkbox" data-ng-model="ctrl.checked" data-ng-change="ctrl.onChange()" app-filter-checkbox-model> {{ ctrl.language }}
     </label>
 </div>
 <!-- LANGUAGE COMPONENT: END -->

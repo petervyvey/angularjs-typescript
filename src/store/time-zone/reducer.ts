@@ -17,7 +17,7 @@ export const Reducer: ActionReducer<IState> = (state: IState, action: Actions) =
 
     switch (action.type) {
 
-        case Action.REFRESH: {
+        case Action.TOUCH: {
             state = Object.assign({}, state);
 
             return state;

@@ -6,21 +6,10 @@ export interface ICriteriaIndexer {
 }
 
 export interface ICriteria {
-    name: string;
+    code: string;
     criterion: ICriterionIndexer;
-
-    setCriterion(criterion: ICriterion);
 }
 
 export class Criteria implements ICriteria {
-    constructor(name: string) {
-        this.name = name;
-    }
-
-    public name: string;
-    public criterion: ICriterionIndexer = {};
-
-    public setCriterion(criterion: ICriterion) {
-        this.criterion[criterion.name] = criterion;
-    }
+    constructor(public code: string, public criterion: ICriterionIndexer = {}) { }
 }

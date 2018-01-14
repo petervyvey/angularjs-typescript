@@ -2,7 +2,7 @@
 import * as angular from 'angular';
 
 import { FilterService } from './filter-service';
-import { ICriteria, Criteria } from './criteria';
+import { ICriteria, ICriteriaIndexer, Criteria } from './criteria';
 import { ICriterionOption, ICriterion, ITypedCriterion, Criterion, TypedCriterion, BooleanCriterion, StringCriterion, ICriterionIndexer } from './criterion';
 
 // import { DirectiveFactory as FilterScope, Controller as FilterScopeController, IFilterScopeRegistrableController } from './filter-scope';
@@ -21,7 +21,7 @@ const module = angular.module('application.services.filterService', [])
 export {
     module,
     FilterService,
-    ICriteria, Criteria,
+    ICriteria, ICriteriaIndexer, Criteria,
     ICriterionOption, ICriterionIndexer, ICriterion, ITypedCriterion, Criterion, TypedCriterion, BooleanCriterion, StringCriterion,
     // FilterScopeController,
     // IFilterScopeRegistrableController,

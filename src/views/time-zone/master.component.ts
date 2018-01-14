@@ -56,7 +56,7 @@ export class Controller {
                 if (state.countries.length === 0) {
                     this.initData();
                 } else {
-                    this.store.dispatch(new TimeZoneState.Action.Refresh());
+                    this.store.dispatch(new TimeZoneState.Action.Touch());
                 }
             });
 

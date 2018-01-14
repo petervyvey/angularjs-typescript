@@ -1,7 +1,5 @@
 <!-- FILTER COMPONENT: BEGIN -->
-<form>
-    <app-filter-scope scope-name="population">
-        <app-view-population-filter-language-filter app-filter-checkbox-group-props app-filter-criteria-props></app-view-population-filter-language-filter>
-    </app-filter-scope>
+<form app-filter-scope="population">
+    <app-view-population-filter-language-filter app-filter-checkbox-group-props app-filter-criteria-props="language"></app-view-population-filter-language-filter>
 </form>
 <!-- FILTER COMPONENT: END -->

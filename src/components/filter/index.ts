@@ -1,17 +1,19 @@
 
 import * as angular from 'angular';
 
-import * as CheckboxGroupProps from './checkbox-group-props.directive';
-import * as CriteriaProps from './criteria-props.directive';
+import * as FilterCheckboxGroupProps from './filter-checkbox-group-props.directive';
+import * as FilterCheckboxModel from './filter-checkbox-model.directive';
+import * as FilterCriteriaProps from './filter-criteria-props.directive';
 import * as FilterScope from './filter-scope.directive';
-import * as CheckboxCriterion from './checkbox-criterion.directive';
+import * as FilterCriterion from './filter-criterion.directive';
 
-export { CheckboxGroupProps, CriteriaProps, FilterScope, CheckboxCriterion };
+export { FilterCheckboxGroupProps, FilterCriteriaProps, FilterScope, FilterCriterion };
 
 export const module =
     angular.module('application.components.filter', [
-        CheckboxGroupProps.module.name,
-        CriteriaProps.module.name,
+        FilterCheckboxGroupProps.module.name,
+        FilterCheckboxModel.module.name,
+        FilterCriteriaProps.module.name,
         FilterScope.module.name,
-        CheckboxCriterion.module.name
+        FilterCriterion.module.name
     ]);

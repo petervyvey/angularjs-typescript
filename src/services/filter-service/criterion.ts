@@ -10,13 +10,11 @@ export interface ICriterionOption {
 
 /* tslint:disable:member-ordering */
 export interface ICriterion {
-    name: string;
+    code: string;
 
     /* tslint:disable:no-any */
     value: any;
     /* tslint:enable:no-any */
-
-    isActive: boolean;
 }
 
 export interface ITypedCriterion<TValue> extends ICriterion {
@@ -24,17 +22,17 @@ export interface ITypedCriterion<TValue> extends ICriterion {
 }
 
 export class Criterion implements ICriterion {
-    constructor(name: string) {
-        this.name = name;
+    constructor(code: string) {
+        this.code = code;
     }
 
-    public name: string;
+    public code: string;
 
     /* tslint:disable:no-any */
     public value: any;
     /* tslint:enable:no-any */
 
-    public get isActive(): boolean { return this.value !== undefined && this.value !== null && this.value !== false && this.value !== ''; }
+    // public get isActive(): boolean { return this.value !== undefined && this.value !== null && this.value !== false && this.value !== ''; }
 }
 
 export class TypedCriterion<TValue> extends Criterion implements ITypedCriterion<TValue> {

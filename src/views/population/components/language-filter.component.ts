@@ -2,14 +2,14 @@
 import * as angular from 'angular';
 import { BehaviorSubject, Subject } from 'rxjs';
 
-import { CheckboxGroupProps } from '@components/filter';
+import { FilterCheckboxGroupProps } from '@components/filter';
 
 import template from './language-filter.template.html';
 
 export class Controller {
 
     private destroyed$: Subject<boolean> = new Subject();
-    public checkboxGroup: CheckboxGroupProps.Controller;
+    public checkboxGroup: FilterCheckboxGroupProps.Controller;
 
     public checked$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public get checked(): boolean { return this.checked$.value; }

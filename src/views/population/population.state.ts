@@ -9,7 +9,7 @@ export const config = [
     ) => {
         $stateProvider
             .state('application.population', {
-                url: '/population',
+                url: '/population?filter',
                 views: {
                     'content@': {
                         template: '<app-view-population></app-view-population>'

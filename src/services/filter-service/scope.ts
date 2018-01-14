@@ -8,23 +8,10 @@ export interface IScopeIndexer {
 }
 
 export interface IScope {
-    name: string;
+    code: string;
     criteria: ICriteriaIndexer;
-    reset$: Subject<string>;
-
-    setCriteria(criteria: ICriteria);
 }
 
 export class Scope implements IScope {
-    constructor(name: string) {
-        this.name = name;
-    }
-
-    public name: string;
-    public criteria: ICriteriaIndexer = {};
-    public reset$: Subject<any> = new Subject<any>();
-
-    public setCriteria(criteria: ICriteria) {
-        this.criteria[criteria.name] = criteria;
-    }
+    constructor(public code: string, public criteria: ICriteriaIndexer = {}) { }
 }

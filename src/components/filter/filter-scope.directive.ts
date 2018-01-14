@@ -3,8 +3,8 @@ import * as angular from 'angular';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { FilterService } from '../../services';
-import { Controller as CheckboxGroupPropsController } from './checkbox-group-props.directive';
-import { Controller as CriteriaPropsController } from './criteria-props.directive';
+import { Controller as CheckboxGroupPropsController } from './filter-checkbox-group-props.directive';
+import { Controller as CriteriaPropsController } from './filter-criteria-props.directive';
 
 export interface IFilterScopeRegistrableController {
     all: boolean;
@@ -23,47 +23,21 @@ export class Controller {
         private filterService: FilterService.FilterService
     ) { }
 
-    public scopeNameValue: string;
-
-    public name$: BehaviorSubject<string> = new BehaviorSubject<string>(this.scopeNameValue);
-    public get name(): string { return this.name$.getValue(); }
-    public set name(value: string) { this.name$.next(value); }
-
     public destroyed$: Subject<boolean> = new Subject<boolean>();
 
-    public registerController(controller: IFilterScopeRegistrableController, group: CheckboxGroupPropsController, criteria: CriteriaPropsController) {
-        if (!controller) { throw new Error('Controller is undefined or null'); }
+    public name: string;
+    public criteria: FilterService.ICriteriaIndexer = {};
 
-        if (!!group) {
-            group.all$
-                .takeUntil(this.destroyed$)
-                .subscribe(x => controller.all = x);
-
-            group.some$
-                .takeUntil(this.destroyed$)
-                .subscribe(x => controller.some = x);
-        }
-
-        if (!!criteria) {
-            criteria.reset$
-                .takeUntil(this.destroyed$)
-                .filter(x => !!x)
-                .filter(x => x === this.name)
-                .subscribe(x => controller.reset());
-
-            criteria.criterion$
-                .takeUntil(this.destroyed$)
-                .filter(x => !!x).subscribe(x => controller.setCriterion(x));
-        }
+    public onCriteriaChanged(criteria: FilterService.ICriteria) {
+        this.criteria[criteria.code] = criteria;
+        this.filterService.onScopeChanged({ code: this.name, criteria: this.criteria });
     }
 
     public destroy() {
-        // this.filterService.destroyScope(this.name);
-
-        this.name$.complete();
-
         this.destroyed$.next(true);
         this.destroyed$.complete();
+
+        // this.filterService.destroyScope(this.name);
     }
 }
 
@@ -71,15 +45,9 @@ export class Directive implements angular.IDirective {
 
     public bindToController = true;
     public controller = Controller;
-    public controllerAs = 'ctrl';
-    public restrict = 'E';
-    public transclude = true;
-    public scope = { scopeNameValue: '@scopeName' };
-    public template = `
-    <div>
-        <div data-ng-transclude></div>
-    </div>
-    `;
+    public controllerAs = '$appFilterScope';
+    public restrict = 'A';
+    public scope = { name: '@appFilterScope' };
 
     public compile() {
         return this.link.bind(this);
