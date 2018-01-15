@@ -20,6 +20,9 @@ export class Controller {
             .filter(scope => scope.code === 'population')
             .debounceTime(10)
             .subscribe(scope => this.$timeout(() => console.log('change', scope)));
+
+        this.filterService.queryParams$
+            .subscribe(params => this.$timeout(() => console.log('params', params)));
     }
 
     public $onDestroy() {

@@ -17,8 +17,9 @@ export class FilterService {
 
     public scope$: BehaviorSubject<IScope> = new BehaviorSubject<IScope>(undefined);
 
+    public queryParams$: Observable<string[]>;
+
     public onInit() {
-        console.log('service', this);
         this.scope$
             .filter(scope => !!scope)
             .debounceTime(100)
@@ -27,6 +28,25 @@ export class FilterService {
                     this.$state.go(this.$state.$current.name, angular.extend(this.$state.params, { filter: 'test' }))
                 )
             );
+
+        this.queryParams$ =
+            this.scope$
+                .filter(scope => !!scope)
+                .debounceTime(100)
+                .map(scope => {
+                    const params: string[] = [];
+                    for (const key in scope) {
+                        if (!!scope.hasOwnProperty(key)) {
+                            let partial: string = scope.code;
+                            if (key === 'code') {
+                                partial = partial + `.${(scope[key] as any).value}`;
+                                params.push(partial);
+                            }
+                        }
+                    }
+                    return params;
+                })
+                .share();
     }
 
     public onScopeChanged(scope: IScope) {
