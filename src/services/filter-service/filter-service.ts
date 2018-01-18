@@ -15,38 +15,52 @@ export class FilterService {
 
     public scope: IScopeIndexer = {};
 
-    public scope$: BehaviorSubject<IScope> = new BehaviorSubject<IScope>(undefined);
+    public scope$: BehaviorSubject<IScopeIndexer> = new BehaviorSubject<IScopeIndexer>(undefined);
 
     public queryParams$: Observable<string[]>;
 
     public onInit() {
-        this.scope$
-            .filter(scope => !!scope)
-            .debounceTime(100)
-            .subscribe(scope =>
-                this.$timeout(() =>
-                    this.$state.go(this.$state.$current.name, angular.extend(this.$state.params, { filter: 'test' }))
-                )
-            );
-
         this.queryParams$ =
             this.scope$
-                .filter(scope => !!scope)
+                .filter(scopes => !!scopes)
                 .debounceTime(100)
-                .map(scope => {
+                .map(scopes => {
                     const params: string[] = [];
-                    for (const key in scope) {
-                        if (!!scope.hasOwnProperty(key)) {
-                            let partial: string = scope.code;
-                            if (key === 'code') {
-                                partial = partial + `.${(scope[key] as any).value}`;
-                                params.push(partial);
+
+                    const scopeSet: string[] = [];
+                    for (const scopeKey in scopes) {
+                        if (!!scopes.hasOwnProperty(scopeKey)) {
+                            scopeSet.push(scopeKey);
+
+                            const criteriaSet: string[] = [];
+                            for (const criteriaKey in scopes[scopeKey].criteria) {
+                                if (!!scopes[scopeKey].criteria.hasOwnProperty(criteriaKey)) {
+                                    scopeSet.forEach(scope => criteriaSet.push(`${scope}.${criteriaKey}`));
+
+                                    for (const criterionKey in scopes[scopeKey].criteria[criteriaKey].criterion) {
+                                        if (!!scopes[scopeKey].criteria[criteriaKey].criterion.hasOwnProperty(criterionKey)) {
+                                            const criterion = scopes[scopeKey].criteria[criteriaKey].criterion[criterionKey];
+                                            criteriaSet.forEach(criteria => params.push(`${criteria}.${criterionKey}:${criterion.value}`));
+                                        }
+                                    }
+                                }
                             }
+
                         }
                     }
+
                     return params;
                 })
                 .share();
+
+        this.queryParams$
+            .filter(params => !!params)
+            .debounceTime(10)
+            .subscribe(params =>
+                this.$timeout(() =>
+                    this.$state.go(this.$state.$current.name, angular.extend(this.$state.params, { filter: params }))
+                )
+            );
     }
 
     public onScopeChanged(scope: IScope) {
@@ -55,7 +69,7 @@ export class FilterService {
         }
 
         this.scope[scope.code] = scope;
-        this.scope$.next(scope);
+        this.scope$.next(this.scope);
     }
 
     // public reset$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);

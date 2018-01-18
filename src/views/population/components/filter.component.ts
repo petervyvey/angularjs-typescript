@@ -17,12 +17,10 @@ export class Controller {
         this.filterService.scope$
             .takeUntil(this.destroyed$)
             .filter(scope => !!scope)
-            .filter(scope => scope.code === 'population')
+            .map(scope => scope.population)
+            .filter(scope => !!scope)
             .debounceTime(10)
             .subscribe(scope => this.$timeout(() => console.log('change', scope)));
-
-        this.filterService.queryParams$
-            .subscribe(params => this.$timeout(() => console.log('params', params)));
     }
 
     public $onDestroy() {

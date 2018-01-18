@@ -14,7 +14,8 @@ export const config = [
                     'content@': {
                         template: '<app-view-population></app-view-population>'
                     }
-                }
+                },
+                reloadOnSearch: false
             });
     }
 ];
