@@ -4,13 +4,30 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { FilterService } from '../../services';
 import { Controller as FilterScopeController } from './filter-scope.directive';
 import { Criteria } from '@services/filter-service/criteria';
+import { Observable } from 'rxjs/Observable';
 
 export class Controller {
+
+    constructor() {
+        this.code$ = this.code$ || new BehaviorSubject<string>(undefined);
+    }
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
     public reset$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
 
-    public name: string;
+    public scope$: BehaviorSubject<string>;
+
+    public code$: BehaviorSubject<string>;
+    public get code(): string {
+        this.code$ = this.code$ || new BehaviorSubject<string>(undefined);
+        return this.code$.value;
+    }
+    public set code(value: string) {
+        this.code$ = this.code$ || new BehaviorSubject<string>(undefined);
+        this.code$.next(value);
+    }
+
+    public namespace$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([undefined, undefined]);
 
     public criterion: FilterService.ICriterionIndexer = {};
 
@@ -18,12 +35,21 @@ export class Controller {
 
     public onCriterionChanged(criterion: FilterService.ICriterion) {
         this.criterion[criterion.code] = criterion;
-        this.publishChange(new FilterService.Criteria(this.name, this.criterion));
+        this.publishChange(new FilterService.Criteria(this.code, this.criterion));
     }
 
-    public destroy(): void {
+    public initSubscriptions() {
+        Observable.combineLatest(this.scope$, this.code$)
+            .takeUntil(this.destroyed$)
+            .filter(([scope, code]: [string, string]) => !!scope && !!code)
+            .subscribe(([scope, code]: [string, string]) => this.namespace$.next([scope, code]));
+    }
+
+    public onDestroy(): void {
         this.destroyed$.next(true);
         this.destroyed$.complete();
+
+        if (this.scope$) { this.scope$.complete(); }
 
         this.reset$.complete();
     }
@@ -43,17 +69,19 @@ export class Directive implements ng.IDirective {
     }
 
     public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, [controller, filterScope]: [Controller, FilterScopeController]) {
-        attrs.$observe('appFilterCriteriaProps', x => controller.name = x as string);
+        attrs.$observe('appFilterCriteriaProps', x => controller.code = x as string);
 
+        controller.scope$ = filterScope.code$;
         controller.publishChange = (criteria: FilterService.ICriteria) => {
             filterScope.onCriteriaChanged({ code: criteria.code, criterion: criteria.criterion });
         };
+        controller.initSubscriptions();
 
         // this.filter.reset$
         //     .takeUntil(controller.destroyed$)
         //     .subscribe(x => controller.reset$.next(x));
 
-        scope.$on('$destroy', () => controller.destroy());
+        scope.$on('$destroy', () => controller.onDestroy());
     }
 }
 

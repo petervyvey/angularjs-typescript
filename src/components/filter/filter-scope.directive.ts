@@ -21,23 +21,34 @@ export class Controller {
 
     constructor(
         private filterService: FilterService.FilterService
-    ) { }
+    ) {
+        this.code$ = this.code$ || new BehaviorSubject<string>(undefined);
+    }
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
 
-    public name: string;
+    public code$: BehaviorSubject<string>;
+    public get code(): string {
+        this.code$ = this.code$ || new BehaviorSubject<string>(undefined);
+        return this.code$.value;
+    }
+    public set code(value: string) {
+        this.code$ = this.code$ || new BehaviorSubject<string>(undefined);
+        this.code$.next(value);
+    }
+
     public criteria: FilterService.ICriteriaIndexer = {};
 
     public onCriteriaChanged(criteria: FilterService.ICriteria) {
         this.criteria[criteria.code] = criteria;
-        this.filterService.onScopeChanged({ code: this.name, criteria: this.criteria });
+        this.filterService.onScopeChanged({ code: this.code, criteria: this.criteria });
     }
 
     public destroy() {
         this.destroyed$.next(true);
         this.destroyed$.complete();
 
-        // this.filterService.destroyScope(this.name);
+        this.code$.complete();
     }
 }
 
@@ -47,7 +58,7 @@ export class Directive implements angular.IDirective {
     public controller = Controller;
     public controllerAs = '$appFilterScope';
     public restrict = 'A';
-    public scope = { name: '@appFilterScope' };
+    public scope = { code: '@appFilterScope' };
 
     public compile() {
         return this.link.bind(this);

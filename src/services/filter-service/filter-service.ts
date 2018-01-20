@@ -1,9 +1,11 @@
 ﻿
 import * as angular from 'angular';
+import { StateService } from '@uirouter/angularjs';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 import { IScope, Scope, IScopeIndexer } from './scope';
-import { StateService } from '@uirouter/angularjs';
+import { ICriteriaIndexer } from './criteria';
+import { BooleanCriterion, ICriterionIndexer } from './criterion';
 
 export class FilterService {
     constructor(
@@ -24,33 +26,8 @@ export class FilterService {
             this.scope$
                 .filter(scopes => !!scopes)
                 .debounceTime(100)
-                .map(scopes => {
-                    const params: string[] = [];
-
-                    const scopeSet: string[] = [];
-                    for (const scopeKey in scopes) {
-                        if (!!scopes.hasOwnProperty(scopeKey)) {
-                            scopeSet.push(scopeKey);
-
-                            const criteriaSet: string[] = [];
-                            for (const criteriaKey in scopes[scopeKey].criteria) {
-                                if (!!scopes[scopeKey].criteria.hasOwnProperty(criteriaKey)) {
-                                    scopeSet.forEach(scope => criteriaSet.push(`${scope}.${criteriaKey}`));
-
-                                    for (const criterionKey in scopes[scopeKey].criteria[criteriaKey].criterion) {
-                                        if (!!scopes[scopeKey].criteria[criteriaKey].criterion.hasOwnProperty(criterionKey)) {
-                                            const criterion = scopes[scopeKey].criteria[criteriaKey].criterion[criterionKey];
-                                            criteriaSet.forEach(criteria => params.push(`${criteria}.${criterionKey}:${criterion.value}`));
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-
-                    return params;
-                })
+                .map(scopes => this.buildScopeNamespaces(scopes))
+                .do(params => console.log('params', params))
                 .share();
 
         this.queryParams$
@@ -72,79 +49,60 @@ export class FilterService {
         this.scope$.next(this.scope);
     }
 
-    // public reset$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
+    private buildScopeNamespaces(scopes: IScopeIndexer): string[] {
+        const params: string[] = [];
 
-    // public criteria$: BehaviorSubject<ICriteria> = new BehaviorSubject<ICriteria>(undefined);
-    // public filter$: Observable<ICriteria[]> =
-    //     Observable
-    //         .combineLatest(this.criteria$)
-    //         .map(() => {
-    //             return this.items;
-    //         })
-    //         .share();
+        const namespaces: string[] = [];
+        for (const name in scopes) {
+            if (!!scopes.hasOwnProperty(name)) {
+                namespaces.push(name);
+                const criteria = scopes[name].criteria;
+                params.push(...this.buildCriteriaNamespaces(namespaces, criteria));
+            }
+        }
 
-    // public scopedCriteria(scope: string): ICriteria[] {
-    //     return this.items.filter(x => x.scope === name);
-    // }
+        return params;
+    }
 
-    // public scoped$(scopeName: string): Observable<ICriteria[]> {
-    //     let scope: IScopeReference_DEPRECATED | IScopeReference_DEPRECATED[] = this.scopes_DEPRECATED.filter(x => x.name === scopeName);
-    //     if (scope.length > 0) {
-    //         scope = scope[0];
-    //     } else {
-    //         scope = null;
-    //     }
+    private buildCriteriaNamespaces(scopes: string[], indexable: ICriteriaIndexer): string[] {
+        const params: string[] = [];
 
-    //     if (!scope) {
-    //         scope = {
-    //             name: scopeName,
-    //             observable:
-    //                 Observable
-    //                     .combineLatest(this.criteria$)
-    //                     .map(() => {
-    //                         return this.items.filter(x => x.scope === scopeName);
-    //                     })
-    //                     .share()
-    //         };
+        const namespaces: string[] = [];
+        for (const property in indexable) {
+            if (!!indexable.hasOwnProperty(property)) {
+                scopes.forEach(scope => namespaces.push(`${scope}.${property}`));
 
-    //         this.scopes_DEPRECATED.push(scope);
-    //     }
+                const criterion = indexable[property].criterion;
+                params.push(...this.buildCriterionNamespaces(namespaces, criterion));
+            }
+        }
 
-    //     return (scope as IScopeReference_DEPRECATED).observable;
-    // }
+        return params;
+    }
 
-    // public active$(scopeName: string): Observable<boolean> {
-    //     return this.scoped$(scopeName)
-    //         .map((x: ICriteria[]) => {
-    //             let isActive: boolean = false;
-    //             x.forEach(criteria => {
-    //                 for (const criterion in criteria.items) {
-    //                     if (criteria.items.hasOwnProperty(criterion)) {
-    //                         isActive = isActive || criteria.items[criterion].isActive;
-    //                     }
-    //                 }
-    //             });
+    private buildCriterionNamespaces(namespaces: string[], indexable: ICriterionIndexer): string[] {
+        const params: string[] = [];
 
-    //             return isActive;
-    //         })
-    //         .share();
-    // }
+        for (const property in indexable) {
+            if (!!indexable.hasOwnProperty(property)) {
+                const value: string = indexable[property].value;
+                params.push(...this.createCriterionParam(namespaces, indexable, property, value));
+            }
+        }
 
-    // public destroyScope(scopeName: string) {
-    //     let scope: IScopeReference_DEPRECATED | IScopeReference_DEPRECATED[] = this.scopes_DEPRECATED.filter(x => x.name === scopeName);
-    //     if (scope.length > 0) {
-    //         scope = scope[0];
-    //         const index = this.scopes_DEPRECATED.indexOf(scope);
-    //         this.scopes_DEPRECATED.splice(index, 1);
-    //     }
-    // }
+        return params;
+    }
 
-    // private setCriteria(criteria: ICriteria) {
-    //     const index: number = this.items.indexOf(criteria);
-    //     if (index === -1) {
-    //         this.items.push(criteria);
-    //     } else {
-    //         this.items[index] = criteria;
-    //     }
-    // }
+    private createCriterionParam(criteriaSet: string[], criterion: ICriterionIndexer, property: string, value: string): string[] {
+        const params: string[] = [];
+
+        let type: string;
+        if (criterion[property] instanceof BooleanCriterion) {
+            type = 'boolean';
+        }
+
+        criteriaSet.forEach(criteria => params.push(`${criteria}.${property}:${type}:${value}`));
+
+        return params;
+    }
 }
