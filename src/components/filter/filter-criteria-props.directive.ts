@@ -8,14 +8,15 @@ import { Observable } from 'rxjs/Observable';
 
 export class Controller {
 
-    constructor() {
+    constructor(
+        private filterService: FilterService.FilterService
+    ) {
         this.code$ = this.code$ || new BehaviorSubject<string>(undefined);
     }
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
     public reset$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
-
-    public scope$: BehaviorSubject<string>;
+    public scope$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
 
     public code$: BehaviorSubject<string>;
     public get code(): string {
@@ -71,7 +72,11 @@ export class Directive implements ng.IDirective {
     public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, [controller, filterScope]: [Controller, FilterScopeController]) {
         attrs.$observe('appFilterCriteriaProps', x => controller.code = x as string);
 
-        controller.scope$ = filterScope.code$;
+        filterScope
+            .code$
+            .takeUntil(controller.destroyed$)
+            .subscribe(code => controller.scope$.next(code));
+
         controller.publishChange = (criteria: FilterService.ICriteria) => {
             filterScope.onCriteriaChanged({ code: criteria.code, criterion: criteria.criterion });
         };

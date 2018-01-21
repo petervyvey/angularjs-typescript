@@ -14,6 +14,8 @@ export class Controller {
         private filterService: FilterService.FilterService
     ) {
         this.code$ = this.code$ || new BehaviorSubject<string>(undefined);
+
+        this.onInit();
     }
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
@@ -21,14 +23,8 @@ export class Controller {
     public publishChange: (criterion: FilterService.ICriterion) => void = angular.noop;
 
     public namespace$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([undefined, undefined]);
-    public get namespace(): [string, string] {
-        this.namespace$ = this.namespace$ || new BehaviorSubject<[string, string]>([undefined, undefined]);
-        return this.namespace$.value;
-    }
-    public set namespace(value: [string, string]) {
-        this.namespace$ = this.namespace$ || new BehaviorSubject<[string, string]>([undefined, undefined]);
-        this.namespace$.next(value);
-    }
+    public get namespace(): [string, string] { return this.namespace$.value; }
+    public set namespace(value: [string, string]) { this.namespace$.next(value); }
 
     public code$: BehaviorSubject<string>;
     public get code(): string {
@@ -40,18 +36,22 @@ export class Controller {
         this.code$.next(value);
     }
 
+    public criterion$: Observable<FilterService.ICriterion>;
+
+    public onInit() {
+        this.criterion$ =
+            Observable.combineLatest(this.filterService.scope$, this.namespace$, this.code$)
+                .takeUntil(this.destroyed$)
+                .debounceTime(1)
+                .filter(([scope, namespace, code]) => !!scope && !!namespace && !!namespace[0] && !!namespace[1] && !!code)
+                .map(([scope, namespace, code]) => scope[namespace[0]].criteria[namespace[1]].criterion[code])
+                .filter(criterion => !!criterion)
+                .shareReplay(1);
+    }
+
     public onDestroy() {
         this.destroyed$.next(true);
         this.destroyed$.complete();
-    }
-
-    public initSubscriptions() {
-        Observable.combineLatest(this.filterService.scope$, this.namespace$, this.code$)
-            .takeUntil(this.destroyed$)
-            .filter(([scope, namespace, code]) => !!scope && !!namespace && !!namespace[0] && !!namespace[1] && !!code)
-            .map(([scope, namespace, code]) => scope[namespace[0]].criteria[namespace[1]].criterion[code])
-            .filter(criterion => !!criterion)
-            .subscribe(x => console.log('criterion', x));
     }
 
     public criterionChanged(criterion: FilterService.ICriterion) {
@@ -73,11 +73,16 @@ export class Directive implements ng.IDirective {
     public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, [controller, criteria]: [Controller, CriteriaPropsController]) {
         attrs.$observe('appFilterCriterion', x => controller.code = x as string);
 
-        controller.namespace$ = criteria.namespace$;
-        controller.publishChange = (criterion: FilterService.ICriterion) => {
-            criteria.onCriterionChanged(criterion);
-        };
-        controller.initSubscriptions();
+        if (!!criteria) {
+            criteria
+                .namespace$
+                .filter(([s, c]) => !!s && !!c)
+                .subscribe(namespace => controller.namespace = namespace);
+
+            controller.publishChange = (criterion: FilterService.ICriterion) => {
+                criteria.onCriterionChanged(criterion);
+            };
+        }
 
         scope.$on('$destroy', event => controller.onDestroy());
     }

@@ -6,11 +6,13 @@ import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { IScope, Scope, IScopeIndexer } from './scope';
 import { ICriteriaIndexer } from './criteria';
 import { BooleanCriterion, ICriterionIndexer } from './criterion';
+import { QueryParamsService } from '../query-params-service';
 
 export class FilterService {
     constructor(
         private $timeout: angular.ITimeoutService,
-        private $state: StateService
+        private $state: StateService,
+        private queryParamsService: QueryParamsService
     ) {
         this.onInit();
     }
@@ -22,12 +24,20 @@ export class FilterService {
     public queryParams$: Observable<string[]>;
 
     public onInit() {
+        this.queryParamsService
+            .current$
+            .map(params => params.filter)
+            .subscribe(filter => {
+                for (const criterion of filter) {
+                    console.log('criterion', criterion);
+                }
+            });
+
         this.queryParams$ =
             this.scope$
                 .filter(scopes => !!scopes)
                 .debounceTime(100)
                 .map(scopes => this.buildScopeNamespaces(scopes))
-                .do(params => console.log('params', params))
                 .share();
 
         this.queryParams$
