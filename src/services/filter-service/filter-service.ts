@@ -27,6 +27,7 @@ export class FilterService {
         this.queryParamsService
             .current$
             .map(params => params.filter)
+            .filter(filter => !!filter)
             .subscribe(filter => {
                 for (const criterion of filter) {
                     console.log('criterion', criterion);
