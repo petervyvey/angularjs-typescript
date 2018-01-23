@@ -4,9 +4,10 @@ import { StateService } from '@uirouter/angularjs';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 import { IScope, Scope, IScopeIndexer } from './scope';
-import { ICriteriaIndexer } from './criteria';
-import { BooleanCriterion, ICriterionIndexer } from './criterion';
+import { ICriteriaIndexer, Criteria } from './criteria';
+import { ICriterion, StringCriterion, BooleanCriterion, ICriterionIndexer } from './criterion';
 import { QueryParamsService } from '../query-params-service';
+import { ICriteria } from '@services/filter-service';
 
 export class FilterService {
     constructor(
@@ -28,9 +29,37 @@ export class FilterService {
             .current$
             .map(params => params.filter)
             .filter(filter => !!filter)
-            .subscribe(filter => {
-                for (const criterion of filter) {
-                    console.log('criterion', criterion);
+            .subscribe((filter: string | string[]) => {
+                const scopes: { [name: string]: IScope } = {};
+
+                filter = Array.isArray(filter) ? filter : [filter];
+                for (const item of filter) {
+                    const [path, type, value] = item.split(':');
+                    const [scopeCode, criteriaCode, criterionCode] = path.split('.');
+
+                    let criterion: ICriterion;
+                    switch (type) {
+                        case 'string':
+                            criterion = new StringCriterion(criterionCode, value);
+                            break;
+
+                        case 'boolean':
+                            criterion = new BooleanCriterion(criterionCode, value === 'true' ? true : false);
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    if (!scopes[scopeCode]) { scopes[scopeCode] = new Scope(scopeCode); }
+                    if (!scopes[scopeCode].criteria[criteriaCode]) { scopes[scopeCode].criteria[criteriaCode] = new Criteria(criteriaCode); }
+                    if (!scopes[scopeCode].criteria[criteriaCode].criterion[criterionCode]) { scopes[scopeCode].criteria[criteriaCode].criterion[criterionCode] = criterion; }
+
+                    for (const scope in scopes) {
+                        if (scopes.hasOwnProperty(scope)) {
+                            this.onScopeChanged(scopes[scope]);
+                        }
+                    }
                 }
             });
 
@@ -58,6 +87,8 @@ export class FilterService {
 
         this.scope[scope.code] = scope;
         this.scope$.next(this.scope);
+
+        console.log('onScopeChanged', this.scope$.value);
     }
 
     private buildScopeNamespaces(scopes: IScopeIndexer): string[] {

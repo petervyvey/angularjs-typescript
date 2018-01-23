@@ -36,23 +36,23 @@ export class Criterion implements ICriterion {
 }
 
 export class TypedCriterion<TValue> extends Criterion implements ITypedCriterion<TValue> {
-    constructor(name: string) {
-        super(name);
+    constructor(code: string) {
+        super(code);
     }
 
     public value: TValue;
 }
 
 export class StringCriterion extends TypedCriterion<string> {
-    constructor(name: string, value: string) {
-        super(name);
+    constructor(code: string, value: string) {
+        super(code);
         this.value = value;
     }
 }
 
 export class BooleanCriterion extends TypedCriterion<boolean> {
-    constructor(name: string, value: boolean) {
-        super(name);
+    constructor(code: string, value: boolean) {
+        super(code);
         this.value = value;
     }
 }

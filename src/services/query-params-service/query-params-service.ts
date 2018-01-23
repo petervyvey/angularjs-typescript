@@ -44,7 +44,7 @@ export class QueryParamsService implements IQueryParamsService {
             .filter(params => !!params)
             .debounceTime(50)
             .distinctUntilChanged((x, y) => x === y, x => angular.toJson(x))
-            .share();
+            .shareReplay(1);
 
     private onInit() {
         this.$rootScope.$on('$destroy', () => this.onDestroy());
