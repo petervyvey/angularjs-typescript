@@ -66,7 +66,6 @@ export class FilterService {
         this.queryParams$ =
             this.scope$
                 .filter(scopes => !!scopes)
-                .debounceTime(100)
                 .map(scopes => this.buildScopeNamespaces(scopes))
                 .share();
 
@@ -87,8 +86,6 @@ export class FilterService {
 
         this.scope[scope.code] = scope;
         this.scope$.next(this.scope);
-
-        console.log('onScopeChanged', this.scope$.value);
     }
 
     private buildScopeNamespaces(scopes: IScopeIndexer): string[] {

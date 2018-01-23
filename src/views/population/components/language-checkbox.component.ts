@@ -8,6 +8,7 @@ import { FilterCriterion } from '@components/filter';
 import template from './language-checkbox.template.html';
 
 export class Controller {
+
     private destroyed$: Subject<boolean> = new Subject<boolean>();
 
     public filterCriterion: FilterCriterion.Controller;

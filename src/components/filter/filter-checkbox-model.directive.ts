@@ -17,8 +17,12 @@ export class Directive implements ng.IDirective {
 
         if (!!ngModel && !!group) {
             group.registerModel(ngModel);
-
             ngModel.$viewChangeListeners.push(() => group.change$.next(ngModel));
+            scope.$watch(() => ngModel.$modelValue, value => {
+                ngModel.$setViewValue(value);
+                ngModel.$render();
+                group.change$.next(ngModel);
+            });
         }
 
         scope.$on('$destroy', () => {
