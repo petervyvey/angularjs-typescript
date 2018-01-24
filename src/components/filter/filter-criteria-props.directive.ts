@@ -17,6 +17,9 @@ export class Controller {
     public destroyed$: Subject<boolean> = new Subject<boolean>();
     public reset$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
     public scope$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
+    public namespace$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([undefined, undefined]);
+    public criterion: FilterService.ICriterionIndexer = {};
+    public publishChange: (criteria: FilterService.ICriteria) => void = angular.noop;
 
     public code$: BehaviorSubject<string>;
     public get code(): string {
@@ -28,15 +31,16 @@ export class Controller {
         this.code$.next(value);
     }
 
-    public namespace$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([undefined, undefined]);
-
-    public criterion: FilterService.ICriterionIndexer = {};
-
-    public publishChange: (criteria: FilterService.ICriteria) => void = angular.noop;
-
     public onCriterionChanged(criterion: FilterService.ICriterion) {
         this.criterion[criterion.code] = criterion;
         this.publishChange(new FilterService.Criteria(this.code, this.criterion));
+    }
+
+    public onCriterionDestroyed(code: string) {
+        if (!!this.criterion[code]) {
+            delete this.criterion[code];
+            this.publishChange(new FilterService.Criteria(this.code, this.criterion));
+        }
     }
 
     public initSubscriptions() {

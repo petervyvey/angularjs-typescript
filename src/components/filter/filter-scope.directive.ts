@@ -26,6 +26,7 @@ export class Controller {
     }
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
+    public criteria: FilterService.ICriteriaIndexer = {};
 
     public code$: BehaviorSubject<string>;
     public get code(): string {
@@ -36,8 +37,6 @@ export class Controller {
         this.code$ = this.code$ || new BehaviorSubject<string>(undefined);
         this.code$.next(value);
     }
-
-    public criteria: FilterService.ICriteriaIndexer = {};
 
     public onCriteriaChanged(criteria: FilterService.ICriteria) {
         this.criteria[criteria.code] = criteria;

@@ -27,6 +27,7 @@ export class FilterService {
     public onInit() {
         this.queryParamsService
             .current$
+            .debounceTime(100)
             .map(params => params.filter)
             .filter(filter => !!filter)
             .subscribe((filter: string | string[]) => {

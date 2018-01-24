@@ -15,10 +15,9 @@ export class Controller {
     }
 
     private destroyed$: Subject<boolean> = new Subject<boolean>();
-
     public change$: BehaviorSubject<angular.INgModelController> = new BehaviorSubject<angular.INgModelController>(undefined);
-
     public toggleAll$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private models: angular.INgModelController[] = [];
 
     public all$: Observable<boolean> =
         this.change$
@@ -37,8 +36,6 @@ export class Controller {
             .takeUntil(this.destroyed$)
             .map(([some, all]) => some && !all)
             .share();
-
-    private models: angular.INgModelController[] = [];
 
     public registerModel(model: angular.INgModelController) {
         const index: number = this.models.indexOf(model);

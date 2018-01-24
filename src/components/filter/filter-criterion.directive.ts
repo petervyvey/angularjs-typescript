@@ -19,8 +19,9 @@ export class Controller {
     }
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
-
+    public criterion$: Observable<FilterService.ICriterion>;
     public publishChange: (criterion: FilterService.ICriterion) => void = angular.noop;
+    public publishDestroy: (code: string) => void = angular.noop;
 
     public namespace$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([undefined, undefined]);
     public get namespace(): [string, string] { return this.namespace$.value; }
@@ -36,8 +37,6 @@ export class Controller {
         this.code$.next(value);
     }
 
-    public criterion$: Observable<FilterService.ICriterion>;
-
     public onInit() {
         this.criterion$ =
             Observable.combineLatest(this.filterService.scope$, this.namespace$, this.code$)
@@ -52,14 +51,20 @@ export class Controller {
     public onDestroy() {
         this.destroyed$.next(true);
         this.destroyed$.complete();
+
+        this.criterionDestroyed();
     }
 
     public criterionChanged(criterion: FilterService.ICriterion) {
         this.publishChange(criterion);
     }
+
+    public criterionDestroyed() {
+        this.publishDestroy(this.code);
+    }
 }
 
-export class Directive implements ng.IDirective {
+export class Directive implements angular.IDirective {
     public bindToController = true;
     public controller = Controller;
     public controllerAs = '$filterCriterion';
@@ -79,12 +84,13 @@ export class Directive implements ng.IDirective {
                 .filter(([s, c]) => !!s && !!c)
                 .subscribe(namespace => controller.namespace = namespace);
 
-            controller.publishChange = (criterion: FilterService.ICriterion) => {
-                criteria.onCriterionChanged(criterion);
-            };
+            controller.publishChange = (criterion: FilterService.ICriterion) => criteria.onCriterionChanged(criterion);
+            controller.publishDestroy = (code: string) => criteria.onCriterionDestroyed(code);
         }
 
-        scope.$on('$destroy', event => controller.onDestroy());
+        scope.$on('$destroy', event => {
+            controller.onDestroy();
+        });
     }
 }
 

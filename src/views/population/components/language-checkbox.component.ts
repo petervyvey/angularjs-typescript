@@ -10,11 +10,9 @@ import template from './language-checkbox.template.html';
 export class Controller {
 
     private destroyed$: Subject<boolean> = new Subject<boolean>();
-
     public filterCriterion: FilterCriterion.Controller;
-
     public language: string;
-
+    public languageName: string;
     public checked: boolean;
 
     public $onInit() {
@@ -42,7 +40,8 @@ export const module =
             controllerAs: 'ctrl',
             template,
             bindings: {
-                language: '<'
+                language: '<',
+                languageName: '<'
             },
             require: {
                 filterCriterion: '^appFilterCriterion'
