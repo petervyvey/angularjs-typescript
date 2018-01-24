@@ -20,7 +20,11 @@ export class Controller {
             .criterion$
             .takeUntil(this.destroyed$)
             .filter(criterion => !!criterion)
-            .subscribe(criterion => this.checked = criterion.value);
+            .filter(criterion => criterion.code === this.language)
+            .subscribe(criterion => {
+                console.log('criterion', this.language, criterion);
+                this.checked = criterion.value;
+            });
     }
 
     public $onDestroy() {

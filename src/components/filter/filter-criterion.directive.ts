@@ -45,7 +45,7 @@ export class Controller {
                 .filter(([scope, namespace, code]) => !!scope && !!namespace && !!namespace[0] && !!namespace[1] && !!code)
                 .map(([scope, namespace, code]) => scope[namespace[0]].criteria[namespace[1]].criterion[code])
                 .filter(criterion => !!criterion)
-                .shareReplay(1);
+                .share();
     }
 
     public onDestroy() {

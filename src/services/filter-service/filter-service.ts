@@ -25,6 +25,10 @@ export class FilterService {
     public queryParams$: Observable<string[]>;
 
     public onInit() {
+
+        this.scope$
+        .subscribe(scope => console.log('scope', angular.toJson(scope)));
+
         this.queryParamsService
             .current$
             .debounceTime(100)

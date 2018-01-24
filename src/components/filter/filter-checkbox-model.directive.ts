@@ -19,6 +19,7 @@ export class Directive implements ng.IDirective {
             group.registerModel(ngModel);
             ngModel.$viewChangeListeners.push(() => group.change$.next(ngModel));
             scope.$watch(() => ngModel.$modelValue, value => {
+                console.log('model value', value, ngModel);
                 ngModel.$setViewValue(value);
                 ngModel.$render();
                 group.change$.next(ngModel);
