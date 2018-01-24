@@ -41,25 +41,26 @@ export class Controller {
         this.criterion$ =
             Observable.combineLatest(this.filterService.scope$, this.namespace$, this.code$)
                 .takeUntil(this.destroyed$)
-                .debounceTime(1)
+                .debounceTime(10)
                 .filter(([scope, namespace, code]) => !!scope && !!namespace && !!namespace[0] && !!namespace[1] && !!code)
+                .filter(([scope, namespace, code]) => !!scope[namespace[0]] && !!scope[namespace[0]].criteria)
                 .map(([scope, namespace, code]) => scope[namespace[0]].criteria[namespace[1]].criterion[code])
                 .filter(criterion => !!criterion)
-                .share();
+                .shareReplay(1);
     }
 
     public onDestroy() {
         this.destroyed$.next(true);
         this.destroyed$.complete();
 
-        this.criterionDestroyed();
+        this.destroyCriterion();
     }
 
-    public criterionChanged(criterion: FilterService.ICriterion) {
+    public changeCriterion(criterion: FilterService.ICriterion) {
         this.publishChange(criterion);
     }
 
-    public criterionDestroyed() {
+    public destroyCriterion() {
         this.publishDestroy(this.code);
     }
 }
@@ -84,8 +85,8 @@ export class Directive implements angular.IDirective {
                 .filter(([s, c]) => !!s && !!c)
                 .subscribe(namespace => controller.namespace = namespace);
 
-            controller.publishChange = (criterion: FilterService.ICriterion) => criteria.onCriterionChanged(criterion);
-            controller.publishDestroy = (code: string) => criteria.onCriterionDestroyed(code);
+            controller.publishChange = (criterion: FilterService.ICriterion) => criteria.changeCriterion(criterion);
+            controller.publishDestroy = (code: string) => criteria.destroyCriterion(code);
         }
 
         scope.$on('$destroy', event => {

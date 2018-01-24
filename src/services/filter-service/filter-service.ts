@@ -19,19 +19,14 @@ export class FilterService {
     }
 
     public scope: IScopeIndexer = {};
-
     public scope$: BehaviorSubject<IScopeIndexer> = new BehaviorSubject<IScopeIndexer>(undefined);
-
     public queryParams$: Observable<string[]>;
 
     public onInit() {
 
-        this.scope$
-        .subscribe(scope => console.log('scope', angular.toJson(scope)));
-
         this.queryParamsService
             .current$
-            .debounceTime(100)
+            .debounceTime(1)
             .map(params => params.filter)
             .filter(filter => !!filter)
             .subscribe((filter: string | string[]) => {
@@ -62,7 +57,7 @@ export class FilterService {
 
                     for (const scope in scopes) {
                         if (scopes.hasOwnProperty(scope)) {
-                            this.onScopeChanged(scopes[scope]);
+                            this.changeScope(scopes[scope]);
                         }
                     }
                 }
@@ -84,13 +79,20 @@ export class FilterService {
             );
     }
 
-    public onScopeChanged(scope: IScope) {
+    public changeScope(scope: IScope) {
         if (!scope || !!scope && !scope.code) {
             throw new Error('Scope code is empty/null/undefined.');
         }
 
         this.scope[scope.code] = scope;
         this.scope$.next(this.scope);
+    }
+
+    public destroyScope(code: string) {
+        if (!!this.scope[code]) {
+            delete this.scope[code];
+            this.scope$.next(this.scope);
+        }
     }
 
     private buildScopeNamespaces(scopes: IScopeIndexer): string[] {

@@ -38,12 +38,21 @@ export class Controller {
         this.code$.next(value);
     }
 
-    public onCriteriaChanged(criteria: FilterService.ICriteria) {
+    public changeCriteria(criteria: FilterService.ICriteria) {
         this.criteria[criteria.code] = criteria;
-        this.filterService.onScopeChanged({ code: this.code, criteria: this.criteria });
+        this.filterService.changeScope({ code: this.code, criteria: this.criteria });
+    }
+
+    public destroyCriteria(code: string) {
+        if (!!this.criteria[code]) {
+            delete this.criteria[code];
+            this.filterService.changeScope({ code: this.code, criteria: this.criteria });
+        }
     }
 
     public destroy() {
+        this.filterService.destroyScope(this.code);
+
         this.destroyed$.next(true);
         this.destroyed$.complete();
 

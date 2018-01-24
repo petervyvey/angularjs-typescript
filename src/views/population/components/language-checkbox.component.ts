@@ -21,10 +21,7 @@ export class Controller {
             .takeUntil(this.destroyed$)
             .filter(criterion => !!criterion)
             .filter(criterion => criterion.code === this.language)
-            .subscribe(criterion => {
-                console.log('criterion', this.language, criterion);
-                this.checked = criterion.value;
-            });
+            .subscribe(criterion => this.checked = criterion.value);
     }
 
     public $onDestroy() {
@@ -33,7 +30,7 @@ export class Controller {
     }
 
     public onChange() {
-        this.filterCriterion.criterionChanged(new FilterService.BooleanCriterion(this.language, this.checked));
+        this.filterCriterion.changeCriterion(new FilterService.BooleanCriterion(this.language, this.checked));
     }
 }
 
