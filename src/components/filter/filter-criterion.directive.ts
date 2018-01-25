@@ -1,8 +1,8 @@
 
 import * as angular from 'angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { Controller as CheckboxGroupProps } from './filter-checkbox-group-props.directive';
-import { Controller as CriteriaPropsController } from './filter-criteria-props.directive';
+import { Controller as CheckboxGroup } from './filter-checkbox-group.directive';
+import { Controller as CriteriaController } from './filter-criteria.directive';
 import { FilterService } from '../../services';
 
 export class Controller {
@@ -70,13 +70,13 @@ export class Directive implements angular.IDirective {
     public controller = Controller;
     public controllerAs = '$filterCriterion';
     public restrict = 'A';
-    public require = ['appFilterCriterion', '^?appFilterCriteriaProps'];
+    public require = ['appFilterCriterion', '^?appFilterCriteria'];
 
     public compile() {
         return this.link.bind(this);
     }
 
-    public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, [controller, criteria]: [Controller, CriteriaPropsController]) {
+    public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, [controller, criteria]: [Controller, CriteriaController]) {
         attrs.$observe('appFilterCriterion', x => controller.code = x as string);
 
         if (!!criteria) {

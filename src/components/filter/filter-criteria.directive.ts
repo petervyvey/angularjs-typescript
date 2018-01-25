@@ -83,16 +83,16 @@ export class Directive implements ng.IDirective {
 
     public bindToController = true;
     public controller = Controller;
-    public controllerAs = '$appFilterCriteriaProps';
+    public controllerAs = '$appFilterCriteria';
     public restrict = 'A';
-    public require = ['appFilterCriteriaProps', '^appFilterScope'];
+    public require = ['appFilterCriteria', '^appFilterScope'];
 
     public compile() {
         return this.link.bind(this);
     }
 
     public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, [controller, filterScope]: [Controller, FilterScopeController]) {
-        attrs.$observe('appFilterCriteriaProps', x => controller.code = x as string);
+        attrs.$observe('appFilterCriteria', x => controller.code = x as string);
 
         filterScope
             .code$
@@ -111,8 +111,8 @@ export class Directive implements ng.IDirective {
 }
 
 export const module =
-    angular.module('application.component.appFilterCriteriaProps', [])
-        .directive('appFilterCriteriaProps', [
+    angular.module('application.component.appFilterCriteria', [])
+        .directive('appFilterCriteria', [
             'filterService',
             (filterService: FilterService.FilterService) => new Directive(filterService)
         ]);

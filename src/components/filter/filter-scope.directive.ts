@@ -3,8 +3,8 @@ import * as angular from 'angular';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { FilterService } from '../../services';
-import { Controller as CheckboxGroupPropsController } from './filter-checkbox-group-props.directive';
-import { Controller as CriteriaPropsController } from './filter-criteria-props.directive';
+import { Controller as CheckboxGroupController } from './filter-checkbox-group.directive';
+import { Controller as CriteriaController } from './filter-criteria.directive';
 
 export interface IFilterScopeRegistrableController {
     all: boolean;

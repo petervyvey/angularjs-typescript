@@ -1,18 +1,18 @@
 
 import * as angular from 'angular';
-import { Controller as CheckboxGroupProps } from './filter-checkbox-group-props.directive';
-import { Controller as CriteriaPropsController } from './filter-criteria-props.directive';
+import { Controller as CheckboxGroup } from './filter-checkbox-group.directive';
+import { Controller as CriteriaController } from './filter-criteria.directive';
 import { FilterService } from '../../services';
 
 export class Directive implements ng.IDirective {
     public restrict = 'A';
-    public require = ['?ngModel', '?^appFilterCheckboxGroupProps'];
+    public require = ['?ngModel', '?^appFilterCheckboxGroup'];
 
     public compile() {
         return this.link.bind(this);
     }
 
-    public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, [ngModel, group]: [angular.INgModelController, CheckboxGroupProps]) {
+    public link(scope: angular.IScope, element: angular.IAugmentedJQuery, attrs: angular.IAttributes, [ngModel, group]: [angular.INgModelController, CheckboxGroup]) {
         if (!$(element).is(':checkbox')) { return; }
 
         if (!!ngModel && !!group) {

@@ -72,5 +72,5 @@ export class Directive implements ng.IDirective {
 }
 
 export const module =
-    angular.module('application.component.appFilterCheckboxGroupProps', [])
-        .directive('appFilterCheckboxGroupProps', () => new Directive());
+    angular.module('application.component.appFilterCheckboxGroup', [])
+        .directive('appFilterCheckboxGroup', () => new Directive());
