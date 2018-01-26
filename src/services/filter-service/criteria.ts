@@ -1,4 +1,4 @@
-﻿
+
 import { ICriterion, ICriterionIndexer } from './criterion';
 
 export interface ICriteriaIndexer {

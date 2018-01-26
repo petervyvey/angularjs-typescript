@@ -1,4 +1,4 @@
-﻿
+
 import * as angular from 'angular';
 
 import { FilterService } from './filter-service';

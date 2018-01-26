@@ -1,4 +1,4 @@
-﻿
+
 import { select, SelectSignature } from './../core';
 import { Observer, Observable, Operator } from 'rxjs';
 

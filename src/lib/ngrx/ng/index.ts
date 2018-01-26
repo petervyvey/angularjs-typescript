@@ -1,4 +1,4 @@
-﻿import * as angular from 'angular';
+import * as angular from 'angular';
 import { Store, StoreFactory } from './../store';
 
 export const NAME = 'ngrx1-ng';

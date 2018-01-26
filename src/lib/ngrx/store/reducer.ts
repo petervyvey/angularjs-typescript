@@ -1,4 +1,4 @@
-﻿
+
 import { BehaviorSubject } from 'rxjs';
 import { Dispatcher, Action } from './dispatcher';
 

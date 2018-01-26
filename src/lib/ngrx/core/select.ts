@@ -1,6 +1,7 @@
-﻿
+
 import { Observable } from 'rxjs';
 
+// tslint:disable-next-line:interface-name
 export interface SelectSignature<T> {
     <R>(...paths: string[]): Observable<R>;
     <R>(mapFn: (state: T) => R): Observable<R>;

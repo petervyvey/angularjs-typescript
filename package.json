@@ -7,18 +7,14 @@
     "postinstall": "npm run build-step:lint",
     "start": "webpack-dashboard -- webpack-dev-server --open --port 8880",
     "test": "echo \"Error: no test specified\" && exit 1",
-
     "clean-step:dist": "rimraf dist",
     "clean-step:node_modules": "rimraf node_modules",
-
     "build-step:dev": "webpack",
     "build-step:prd": "webpack -p",
     "build-step:lint": "tslint ./src/**/*.ts",
-
     "pipeline:clean": "npm run pipeline:clean:dev",
     "pipeline:clean:dev": "npm run clean-step:dist",
     "pipeline:clean:prd": "npm run clean-step:dist && npm run clean-step:node_modules",
-
     "pipeline:build": "npm run pipeline:build:dev",
     "pipeline:build:dev": "npm run pipeline:clean:dev && npm run build-step:lint && npm run build-step:dev",
     "pipeline:build:prd": "npm run pipeline:clean:prd && npm install && npm run build-step:lint && npm run build-step:prd"

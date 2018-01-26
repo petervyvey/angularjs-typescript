@@ -1,4 +1,4 @@
-﻿
+
 import { Reducer } from './reducer';
 import { Dispatcher } from './dispatcher';
 import { Store } from './store';

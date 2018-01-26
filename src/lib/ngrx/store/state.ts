@@ -1,4 +1,4 @@
-﻿
+
 import { BehaviorSubject, Scheduler } from 'rxjs';
 
 import { Dispatcher } from './dispatcher';

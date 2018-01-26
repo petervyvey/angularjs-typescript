@@ -1,4 +1,4 @@
-﻿
+
 import * as angular from 'angular';
 import { StateService } from '@uirouter/angularjs';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';

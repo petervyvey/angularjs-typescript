@@ -1,4 +1,4 @@
-﻿
+
 import { ActionReducer } from './reducer';
 
 export function combineReducers(reducers: any): ActionReducer<any> {

@@ -1,4 +1,4 @@
-﻿
+
 import * as angular from 'angular';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { FilterService } from '../../services';
