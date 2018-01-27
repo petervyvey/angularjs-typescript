@@ -1,7 +1,7 @@
 
 import * as angular from 'angular';
 
-import template from './country-selector.html';
+import template from './country-selector.template.html';
 import { ICountryInfo } from './country-info';
 
 export class Controller {

@@ -1,5 +1,8 @@
 <!-- FILTER COMPONENT: BEGIN -->
-<form app-filter-scope="population">
+<form>
+    <div style="display: block; min-height: 24px;">
+        <a href="#" onclick="return false;" class="pull-right" data-ng-click="ctrl.reset()">Reset</a>
+    </div>
     <app-view-population-filter-language-filter app-filter-checkbox-group app-filter-criteria="language"></app-view-population-filter-language-filter>
 </form>
 <!-- FILTER COMPONENT: END -->

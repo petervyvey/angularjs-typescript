@@ -4,7 +4,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 
 import { ITimeZoneInfo } from './time-zone-info';
 
-import template from './time-zone-selector.html';
+import template from './time-zone-selector.template.html';
 import { val } from '@uirouter/angularjs';
 
 export class Controller {

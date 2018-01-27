@@ -22,8 +22,8 @@ export class Controller {
     public scope$: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
     public namespace$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([undefined, undefined]);
     public criterion: FilterService.ICriterionIndexer = {};
-    public publishChange: (criteria: FilterService.ICriteria) => void = angular.noop;
-    public publishDestroy: (code: string) => void = angular.noop;
+    public notifyChange: (criteria: FilterService.ICriteria) => void = angular.noop;
+    public notifyDestroy: (code: string) => void = angular.noop;
 
     public code$: BehaviorSubject<string>;
     public get code(): string {
@@ -37,18 +37,18 @@ export class Controller {
 
     public changeCriterion(criterion: FilterService.ICriterion) {
         this.criterion[criterion.code] = criterion;
-        this.publishChange(new FilterService.Criteria(this.code, this.criterion));
+        this.notifyChange(new FilterService.Criteria(this.code, this.criterion));
     }
 
     public destroyCriterion(code: string) {
         if (!!this.criterion[code]) {
             delete this.criterion[code];
-            this.publishChange(new FilterService.Criteria(this.code, this.criterion));
+            this.notifyChange(new FilterService.Criteria(this.code, this.criterion));
         }
     }
 
     public destroyCriteria() {
-        this.publishDestroy(this.code);
+        this.notifyDestroy(this.code);
     }
 
     public initSubscriptions() {
@@ -99,8 +99,8 @@ export class Directive implements ng.IDirective {
             .takeUntil(controller.destroyed$)
             .subscribe(code => controller.scope$.next(code));
 
-        controller.publishChange = (criteria: FilterService.ICriteria) => filterScope.changeCriteria({ code: criteria.code, criterion: criteria.criterion });
-        controller.publishDestroy = (code: string) => filterScope.destroyCriteria(code);
+        controller.notifyChange = (criteria: FilterService.ICriteria) => filterScope.changeCriteria({ code: criteria.code, criterion: criteria.criterion });
+        controller.notifyDestroy = (code: string) => filterScope.destroyCriteria(code);
 
         // this.filter.reset$
         //     .takeUntil(controller.destroyed$)

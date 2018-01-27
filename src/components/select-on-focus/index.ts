@@ -1,2 +1,2 @@
 
-export * from './select-on-focus';
+export * from './select-on-focus.directive';

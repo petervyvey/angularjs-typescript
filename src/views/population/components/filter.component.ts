@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { FilterService } from '@services/filter-service';
 
 import template from './filter.template.html';
+import { FilterScope } from '@components/filter';
 
 export class Controller {
     constructor(
@@ -12,6 +13,12 @@ export class Controller {
     ) { }
 
     private destroyed$: Subject<boolean> = new Subject<boolean>();
+
+    private filterScope: FilterScope.Controller;
+
+    public reset() {
+        this.filterScope.reset();
+    }
 
     public $onDestroy() {
         this.destroyed$.next(true);
@@ -23,5 +30,9 @@ export const module =
     angular.module('application.views.appViewPopulationFilter', [])
         .component('appViewPopulationFilter', {
             controller: Controller,
+            controllerAs: 'ctrl',
+            require: {
+                filterScope: '^^appFilterScope'
+            },
             template
         });

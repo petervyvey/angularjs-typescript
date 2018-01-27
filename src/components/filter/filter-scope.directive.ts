@@ -5,6 +5,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { FilterService } from '../../services';
 import { Controller as CheckboxGroupController } from './filter-checkbox-group.directive';
 import { Controller as CriteriaController } from './filter-criteria.directive';
+import { Observable } from 'rxjs/Observable';
 
 export interface IFilterScopeRegistrableController {
     all: boolean;
@@ -26,6 +27,7 @@ export class Controller {
     }
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
+    public reset$: Subject<boolean> = new Subject<boolean>();
     public criteria: FilterService.ICriteriaIndexer = {};
 
     public code$: BehaviorSubject<string>;
@@ -57,6 +59,10 @@ export class Controller {
         this.destroyed$.complete();
 
         this.code$.complete();
+    }
+
+    public reset() {
+        this.reset$.next(true);
     }
 }
 

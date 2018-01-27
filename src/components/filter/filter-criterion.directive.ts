@@ -20,8 +20,8 @@ export class Controller {
 
     public destroyed$: Subject<boolean> = new Subject<boolean>();
     public criterion$: Observable<FilterService.ICriterion>;
-    public publishChange: (criterion: FilterService.ICriterion) => void = angular.noop;
-    public publishDestroy: (code: string) => void = angular.noop;
+    public changeCriterion: (criterion: FilterService.ICriterion) => void = angular.noop;
+    public destroyCriterion: (code: string) => void = angular.noop;
 
     public namespace$: BehaviorSubject<[string, string]> = new BehaviorSubject<[string, string]>([undefined, undefined]);
     public get namespace(): [string, string] { return this.namespace$.value; }
@@ -53,15 +53,7 @@ export class Controller {
         this.destroyed$.next(true);
         this.destroyed$.complete();
 
-        this.destroyCriterion();
-    }
-
-    public changeCriterion(criterion: FilterService.ICriterion) {
-        this.publishChange(criterion);
-    }
-
-    public destroyCriterion() {
-        this.publishDestroy(this.code);
+        this.destroyCriterion(this.code);
     }
 }
 
@@ -85,8 +77,8 @@ export class Directive implements angular.IDirective {
                 .filter(([s, c]) => !!s && !!c)
                 .subscribe(namespace => controller.namespace = namespace);
 
-            controller.publishChange = (criterion: FilterService.ICriterion) => criteria.changeCriterion(criterion);
-            controller.publishDestroy = (code: string) => criteria.destroyCriterion(code);
+            controller.changeCriterion = (criterion: FilterService.ICriterion) => criteria.changeCriterion(criterion);
+            controller.destroyCriterion = (code: string) => criteria.destroyCriterion(code);
         }
 
         scope.$on('$destroy', event => {
