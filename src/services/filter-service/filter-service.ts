@@ -1,6 +1,6 @@
 
 import * as angular from 'angular';
-import { StateService } from '@uirouter/angularjs';
+import { StateService, TransitionPromise, TransitionService } from '@uirouter/angularjs';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 import { IScope, Scope, IScopeIndexer } from './scope';
@@ -74,9 +74,8 @@ export class FilterService {
             .debounceTime(10)
             .subscribe(params =>
                 this.$timeout(() =>
-                    this.$state.go(this.$state.$current.name, angular.extend(this.$state.params, { filter: params }))
-                )
-            );
+                    this.$state.go(this.$state.$current.name, { filter: params })
+                ));
     }
 
     public changeScope(scope: IScope) {
