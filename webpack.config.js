@@ -1,7 +1,7 @@
 var path = require('path');
 var webpack = require("webpack");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var DashboardPlugin = require('webpack-dashboard/plugin');
+// var DashboardPlugin = require('webpack-dashboard/plugin');
 
 module.exports = {
     devtool: 'cheap-eval-source-map',
@@ -24,7 +24,7 @@ module.exports = {
             jQuery: "jquery"
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),
-        new DashboardPlugin(),
+        // new DashboardPlugin(),
     ],
     module: {
         rules: [
